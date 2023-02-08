@@ -20,7 +20,35 @@
 
 ## Explanations of each file
 
-### Template.cm
+### Ex1.cm
+
+- Explanation of what this file demonstrates
+  - [ ] Status of test 1
+  - [ ] Status of test 2
+- Testing status: Working/Not Working/ Etc.
+
+### Ex2.cm
+
+- Explanation of what this file demonstrates
+  - [ ] Status of test 1
+  - [ ] Status of test 2
+- Testing status: Working/Not Working/ Etc.
+
+### Ex3.cm
+
+- Explanation of what this file demonstrates
+  - [ ] Status of test 1
+  - [ ] Status of test 2
+- Testing status: Working/Not Working/ Etc.
+
+### Ex4.cm
+
+- Explanation of what this file demonstrates
+  - [ ] Status of test 1
+  - [ ] Status of test 2
+- Testing status: Working/Not Working/ Etc.
+
+### Ex5.cm
 
 - Explanation of what this file demonstrates
   - [ ] Status of test 1
