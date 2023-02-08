@@ -92,6 +92,9 @@ ID = [_a-zA-Z][_a-zA-Z0-9]*
 NUM = [0-9]+
 TRUTH = false | true
 
+// should work on all classic c-style comments
+COMMENT = \/\*.*?\*\/
+
    
 %%
 /* ------------------------Lexical Rules Section---------------------- */
@@ -101,6 +104,7 @@ TRUTH = false | true
    code, that will be executed when the scanner matches the associated
    regular expression. */
    
-{ID}               {  }
-{NUM}               {  }
-{TRUTH}               {  }
+{ID}              {  }
+{NUM}             {  }
+{TRUTH}           {  }
+{COMMENT}         {  }
