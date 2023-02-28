@@ -68,6 +68,19 @@ parser code {:
 
 /* -- Declaration of Terminals and Non Terminals -- */
 
+/* -- TERMINALS -- */
+
+terminal IF, ELSE, INT, RETURN, VOID, WHILE, BOOL;
+terminal EQ, LT, GT, LTE, GTE, EQEQ, NOTEQ;
+terminal SEMI, COMMA;
+terminal LEFT_PAREN, RIGHT_PAREN, LEFT_SQ_BRAC, RIGHT_SQ_BRAC, LEFT_BRAC, RIGHT_BRAC;
+terminal PLUS, MINUS, TIMES, DIVIDE;
+terminal Integer NUM;
+terminal String ID;
+terminal ERROR;
+
+/* -- NON TERMINALS -- */
+
 /* -- Grammar Section -- */
 
 start with program;

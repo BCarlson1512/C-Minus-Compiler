@@ -103,8 +103,40 @@ COMMENT = \/\*.*?\*\/
    This section contains regular expressions and actions, i.e. Java
    code, that will be executed when the scanner matches the associated
    regular expression. */
-   
-{ID}              {  }
-{NUM}             {  }
-{TRUTH}           {  }
-{COMMENT}         {  }
+
+"bool"            {return symbol(sym.BOOL);}
+"else"            {return symbol(sym.ELSE);}
+"if"              {return symbol(sym.IF);}
+"int"             {return symbol(sym.INT);}
+"return"          {return symbol(sym.RETURN);}
+"void"            {return symbol(sym.VOID);}
+"white"           {return symbol(sym.WHILE);}
+
+"="            {return symbol(sym.EQ);}
+"<"            {return symbol(sym.LT);}
+">"              {return symbol(sym.GT);}
+"<="             {return symbol(sym.LTE);}
+">="          {return symbol(sym.GTE);}
+"!="            {return symbol(sym.NOTEQ);}
+"=="           {return symbol(sym.EQEQ);}
+
+";"            {return symbol(sym.SEMI);}
+","           {return symbol(sym.COMMA);}
+
+"("            {return symbol(sym.LEFT_PAREN);}
+")"           {return symbol(sym.RIGHT_PAREN);}
+"{"            {return symbol(sym.LEFT_SQ_BRAC);}
+"}"           {return symbol(sym.RIGHT_SQ_BRAC);}
+"["            {return symbol(sym.LEFT_BRAC);}
+"]"           {return symbol(sym.RIGHT_BRAC);}
+
+"+"            {return symbol(sym.PLUS);}
+"-"           {return symbol(sym.MINUS);}
+"*"            {return symbol(sym.TIMES);}
+"/"           {return symbol(sym.DIVIDE);}
+
+{ID}              { return symbol(sym.ID, yytext()); }
+{NUM}             { return symbol(sym.NUM, Integer.parseInt(yytext())); }
+{WhiteSpace}           { /* Skip Whitespace */  }
+{COMMENT}         { /* Do Nothing */  }
+.                 {return symbol(sym.ERROR)}
