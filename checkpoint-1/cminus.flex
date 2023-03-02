@@ -139,4 +139,5 @@ COMMENT = \/\*.*?\*\/
 {NUM}             { return symbol(sym.NUM, Integer.parseInt(yytext())); }
 {WhiteSpace}           { /* Skip Whitespace */  }
 {COMMENT}         { /* Do Nothing */  }
-.                 {return symbol(sym.ERROR)}
+// .                 {return symbol(sym.ERROR)}
+.                 {/**/}
