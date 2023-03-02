@@ -1,12 +1,12 @@
 package absyn;
 
 public class VarExp extends Exp {
-  public String name;
+  public Var var;
 
-  public VarExp( int row, int col, String name ) {
+  public VarExp( int row, int col, Var variable ) {
     this.row = row;
     this.col = col;
-    this.name = name;
+    this.var = variable;
   }
 
   public void accept( AbsynVisitor visitor, int level ) {
