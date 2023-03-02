@@ -2,11 +2,11 @@
   Created by: Fei Song
   File Name: Main.java
   To Build: 
-  After the Scanner.java, tiny.flex, and tiny.cup have been processed, do:
+  After the Scanner.java, cminus.flex, and cminus.cup have been processed, do:
     javac Main.java
   
   To Run: 
-    java -classpath /usr/share/java/cup.jar:. Main gcd.tiny
+    java -classpath /usr/share/java/cup.jar:. Main gcd.cm
 
   where gcd.tiny is an test input file for the tiny language.
 */

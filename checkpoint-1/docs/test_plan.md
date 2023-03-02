@@ -2,6 +2,8 @@
 
 ## Current status
 
+- Bash script that will compile all compiler related files and test against all supplied .cm files
+
 ### Provided files
 
 - [ ] fac.cm
