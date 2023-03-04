@@ -12,11 +12,12 @@ public class OpExp extends Exp {
   public final static int GT     = 8;
   public final static int GTE = 9;
   public final static int LTE = 10;
+  public final static int DIVIDE = 11;
 
   // TODO unsure about these
-  public final static int AND = 11;
-  public final static int OR = 12;
-  public final static int NOt = 13;
+  public final static int AND = 12;
+  public final static int OR = 13;
+  public final static int NOT = 14;
 
   public Exp left;
   public int op;

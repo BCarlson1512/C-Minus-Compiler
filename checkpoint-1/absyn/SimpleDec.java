@@ -2,7 +2,7 @@ package absyn;
 
 public class SimpleDec extends VarDec {
 
-    public SimpleDec(int row, int col, String type, String name) {
+    public SimpleDec(int row, int col, Type type, String name) {
         this.row = row;
         this.col = col;
         this.type = type;
