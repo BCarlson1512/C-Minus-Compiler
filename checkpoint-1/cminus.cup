@@ -71,7 +71,7 @@ parser code {:
 /* -- TERMINALS -- */
 
 terminal IF, ELSE, INT, RETURN, VOID, WHILE, BOOL;
-terminal EQ, LT, GT, LTE, GTE, EQEQ, NOTEQ;
+terminal EQ, LT, GT, LTE, GTE, EQEQ, NOTEQ, OR, AND, NOT;
 terminal SEMI, COMMA;
 terminal LEFT_SQ_BRAC, RIGHT_SQ_BRAC, LEFT_BRAC, RIGHT_BRAC,LEFT_CURLY_BRAC,RIGHT_CURLY_BRAC;
 terminal PLUS, MINUS, TIMES, DIVIDE;
@@ -82,11 +82,17 @@ terminal ERROR;
 /* -- NON TERMINALS -- */
 
 non terminal Var var, param;
-non terminal VarDecList params;
-non terminal ExpList program, declaration_list;
-non terminal Exp declaration, if_stmt, repeat_stmt, assign_stmt, read_stmt, write_stmt;
+non terminal VarDecList params, param_list, local_declarations;
+non terminal ExpList declaration_list, statement_list, args, arg_list;
+non terminal Exp declaration, if_stmt, repeat_stmt, assign_stmt, read_stmt, write_stmt, statement, exp_stmt, selection_stmt, iteration_stmt, return_stmt, obool_exp, abool_exp, ubool_exp, add_exp, term, call, factor, signed_factor, simple_exp;
 non terminal Exp exp;   
 non terminal Exp var_declaration,fun_declaration,fun_prototype;   
+non terminal Type type_specifier;
+non terminal CompoundExp compound_stmt;
+
+non terminal DecList program;
+
+non terminal Integer relop, addop, mulop;
 
 /* -- Grammar Section -- */
 
@@ -113,7 +119,7 @@ declaration_list  ::= declaration_list:d1 declaration:d2
                   ;
 
 declaration       ::= var_declaration:v
-                    {: RESULT = v :}
+                    {: RESULT = v; :}
                   | fun_declaration:f
                    {: RESULT = f; :}
                   | fun_prototype:p
@@ -138,7 +144,7 @@ fun_declaration   ::= type_specifier:t ID:i LEFT_BRAC params:p RIGHT_BRAC compou
 
 // TODO: Add function prototype
 fun_prototype     ::= type_specifier:t ID:i LEFT_BRAC params:p RIGHT_BRAC SEMI
-                    {: RESULT = t :}
+                    {: RESULT = t; :}
                   ;
 
 params            ::= param_list:pl 
@@ -151,7 +157,7 @@ param_list        ::= param_list:pl COMMA param:p
                       VarDecList t = pl;
                         while( t.tail != null )
                            t = t.tail;
-                        t.tail = new VarDecList(p, null);
+                        t.tail = new VarDecList(pl, null);
                         RESULT = pl;
                     :}
                     | param:p
@@ -159,9 +165,9 @@ param_list        ::= param_list:pl COMMA param:p
                   ;
 
 param             ::= type_specifier:t ID COMMA param:p 
-                    {: RESULT = pl; :}
+                    {: RESULT = t; :}
                   | type_specifier:t ID RIGHT_SQ_BRAC LEFT_SQ_BRAC 
-                    {: RESULT = pl; :}
+                    {: RESULT = t; :}
                   ;
 
 compound_stmt     ::= LEFT_CURLY_BRAC local_declarations:ld statement_list:sl RIGHT_CURLY_BRAC  
@@ -222,13 +228,13 @@ var               ::= ID:i
                   ;
 
 obool_exp         ::= obool_exp:e1 OR abool_exp:e2
-                    {: RESULT = new OpExp(e1left, e1right, s1, OpExp.OR, s2); :}
+                    {: RESULT = new OpExp(e1left, e1right, e1, OpExp.OR, e2); :}
                   | abool_exp:a
                     {: RESULT = a; :}
                   ;
 
-abool_exp         ::= abool_exp:e1 AND aexp:e2
-                    {: RESULT = new OpExp(e1left, e1right, s1, OpExp.AND, s2); :}
+abool_exp         ::= abool_exp:e1 AND abool_exp:e2
+                    {: RESULT = new OpExp(e1left, e1right, e1, OpExp.AND, e2); :}
                   | ubool_exp:u
                     {: RESULT = u; :}
                   ;
@@ -290,13 +296,13 @@ signed_factor     ::= MINUS signed_factor:f
 factor            ::= LEFT_BRAC exp:e RIGHT_BRAC
                     {: RESULT = e; :}
                   | var:v
-                    {: RESULT = v; :}
+                    {: RESULT = new VarExp(vleft,vright,v); :}
                   | call:c
                     {: RESULT = c; :}
                   | NUM:n
                     {: RESULT = new NumExp(nleft, nright, n); :}
-                  | TRUE
-                    {: RESULT = new BoolExp(1); :}
+                  | BOOL:b
+                    {: RESULT = new BoolExp(bleft,bright,b); :}
                   ;
 
 call              ::= ID:i LEFT_BRAC args:a RIGHT_BRAC
