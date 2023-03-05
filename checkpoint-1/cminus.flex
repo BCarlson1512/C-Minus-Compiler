@@ -114,8 +114,8 @@ COMMENT = \/\*.*?\*\/
 ";"            {return symbol(sym.SEMI);}
 ","           {return symbol(sym.COMMA);}
 
-"("            {return symbol(sym.BRAC);}
-")"           {return symbol(sym.BRAC);}
+"("            {return symbol(sym.LEFT_BRAC);}
+")"           {return symbol(sym.RIGHT_BRAC);}
 "{"            {return symbol(sym.LEFT_CURLY_BRAC);}
 "}"           {return symbol(sym.RIGHT_CURLY_BRAC);}
 "["            {return symbol(sym.LEFT_SQ_BRAC);}
