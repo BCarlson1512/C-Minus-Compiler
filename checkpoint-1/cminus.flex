@@ -97,7 +97,7 @@ COMMENT = \/\*.*?\*\/
 "int"             {return symbol(sym.INT);}
 "return"          {return symbol(sym.RETURN);}
 "void"            {return symbol(sym.VOID);}
-"white"           {return symbol(sym.WHILE);}
+"while"           {return symbol(sym.WHILE);}
 
 "="            {return symbol(sym.EQ);}
 "<"            {return symbol(sym.LT);}
