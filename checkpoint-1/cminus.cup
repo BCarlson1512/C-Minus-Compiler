@@ -131,6 +131,8 @@ declaration_list  ::= declaration_list:d1 declaration:d2
                         parser.report_error("invalid declaration", null); 
                         RESULT = new DecList(d, null); 
                     :}
+                  |
+                  {: RESULT = new DecList(null, null); :}
                   ;
 
 declaration       ::= var_declaration:v
@@ -211,7 +213,7 @@ local_declarations::= local_declarations:ld var_declaration:vd
 */
 
 statement_list    ::= statement_list:sl statement:s
-                    {: RESULT = sl; :}
+                    {: RESULT = new ExpList(s, sl); :}
                   | 
                   ;
                 
