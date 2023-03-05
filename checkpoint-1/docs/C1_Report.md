@@ -38,7 +38,6 @@ Once the scanner was built, we split into two. The parser and absyn classes coul
 
 ### Parser
 
-
 ### Debugging
 
 We grouped up again and pair programmed the remaining aspects of this milestone as well as debugging the entire program start-to-finish. This program was hard to debug in separate modules, due to the output of Scanner.java and its relation to cup. We ended up clearing all of our errors and warnings before moving onto testing our provided and custom files.
@@ -90,7 +89,6 @@ Limitations:
 - Debugging
   - Refactored cup rules
 - Create documentation
-
 
 ## Acknowledgements
 
