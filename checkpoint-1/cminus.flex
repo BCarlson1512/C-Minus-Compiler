@@ -82,7 +82,7 @@ NUM = [0-9]+
 TRUTH = true|false
 
 // should work on all classic c-style comments
-COMMENT = \/\*.*?\*\/
+COMMENT = \/\*[\s\S]*?\*\/
 
    
 %%
