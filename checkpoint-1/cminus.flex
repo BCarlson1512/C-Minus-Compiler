@@ -106,16 +106,20 @@ COMMENT = \/\*.*?\*\/
 ">="          {return symbol(sym.GTE);}
 "!="            {return symbol(sym.NOTEQ);}
 "=="           {return symbol(sym.EQEQ);}
+"~"           {return symbol(sym.NOT);}
+
+"&&"           {return symbol(sym.AND);}
+"||"           {return symbol(sym.OR);}
 
 ";"            {return symbol(sym.SEMI);}
 ","           {return symbol(sym.COMMA);}
 
-"("            {return symbol(sym.LEFT_PAREN);}
-")"           {return symbol(sym.RIGHT_PAREN);}
-"{"            {return symbol(sym.LEFT_SQ_BRAC);}
-"}"           {return symbol(sym.RIGHT_SQ_BRAC);}
-"["            {return symbol(sym.LEFT_BRAC);}
-"]"           {return symbol(sym.RIGHT_BRAC);}
+"("            {return symbol(sym.BRAC);}
+")"           {return symbol(sym.BRAC);}
+"{"            {return symbol(sym.LEFT_CURLY_BRAC);}
+"}"           {return symbol(sym.RIGHT_CURLY_BRAC);}
+"["            {return symbol(sym.LEFT_SQ_BRAC);}
+"]"           {return symbol(sym.RIGHT_SQ_BRAC);}
 
 "+"            {return symbol(sym.PLUS);}
 "-"           {return symbol(sym.MINUS);}
