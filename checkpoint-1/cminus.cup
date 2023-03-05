@@ -79,6 +79,7 @@ terminal Integer NUM;
 terminal String ID;
 terminal Boolean BOOL;
 terminal String TRUTH;
+terminal ERROR;
 
 /* -- NON TERMINALS -- */
 
@@ -112,6 +113,8 @@ start with program;
 
 program	          ::= declaration_list:s
                     {: RESULT = s; :}
+                  | ERROR 
+                  {: RESULT= null; :}
                   ;
 
 declaration_list  ::= declaration_list:d1 declaration:d2 
@@ -125,7 +128,7 @@ declaration_list  ::= declaration_list:d1 declaration:d2
                     {: RESULT = new DecList(d, null); :}
                   | error declaration:d
                     {: 
-                        parser.report_error("invalid", null); 
+                        parser.report_error("invalid declaration", null); 
                         RESULT = new DecList(d, null); 
                     :}
                   ;
@@ -137,7 +140,19 @@ declaration       ::= var_declaration:v
                   ;
 
 var_declaration   ::= type_specifier:t ID:i SEMI
-                    {: RESULT = new SimpleDec(tleft,tright, t, i); :} 
+                    {: RESULT = new SimpleDec(tleft,tright, t, i); :}
+                  | type_specifier:t ID:i LEFT_SQ_BRAC NUM:n RIGHT_SQ_BRAC SEMI
+                    {: RESULT = new ArrayDec(tleft, tright, t, i, new IntExp(ileft, iright, n)); :}
+                  | type_specifier:t ID:i error:e 
+                    {: 
+                       parser.report_error("Invalid variable declaration: missing semi", null);
+                       RESULT = new ArrayDec(tleft, tright, t, i, new IntExp(ileft, iright, 0));
+                    :}
+                  | type_specifier:t ID:i LEFT_SQ_BRAC error:e  RIGHT_SQ_BRAC SEMI
+                    {: 
+                       parser.report_error("Invalid variable declaration: invalid array size", null); 
+                       RESULT = new ArrayDec(tleft, tright, t, i, new IntExp(ileft, iright, 0));
+                    :}
                   ;
   
 type_specifier    ::= INT:i

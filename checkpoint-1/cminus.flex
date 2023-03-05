@@ -133,6 +133,5 @@ COMMENT = \/\*[\s\S]*?\*\/
 {NUM}             { return symbol(sym.NUM, Integer.parseInt(yytext())); }
 {WhiteSpace}           { /* Skip Whitespace */  }
 {COMMENT}         { /* Do Nothing */  }
-
-// .                 {return symbol(sym.ERROR)}
-.                 {/**/}
+.                 {System.err.println("Unrecognized character: " + yytext() + " line # " + yyline); return symbol(sym.ERROR);}
+//.                 {/**/}
