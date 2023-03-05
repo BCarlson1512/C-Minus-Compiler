@@ -16,8 +16,6 @@ public interface AbsynVisitor {
 
   public void visit( RepeatExp exp, int level );
 
-  public void visit( VarExp exp, int level );
-
   public void visit( WriteExp exp, int level );
 
   public void visit( ArrayDec expList, int level);
@@ -51,4 +49,6 @@ public interface AbsynVisitor {
   public void visit( WhileExp expr, int level);
 
   public void visit( CompoundExp expr, int level);
+
+  public void visit ( Type ty, int level);
 }

@@ -4,7 +4,7 @@ public class FunctionDec extends Dec {
     public String func;
     public VarDecList params_list;
     public Exp body;
-    public Type res;
+    public Type ret_type;
 
     /**
     *    @param row -> (int) row location in the program
@@ -20,7 +20,7 @@ public class FunctionDec extends Dec {
         this.func = func;
         this.params_list = params_list;
         this.body = body;
-        this.res = res;
+        this.ret_type = ret_type;
     }
     public void accept( AbsynVisitor visitor, int level ) {
         visitor.visit( this, level );

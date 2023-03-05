@@ -139,7 +139,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
 
   public void visit(Dec declaration, int level) {
     boolean isVarDec = declaration instanceof VarDec;
-    boolean isFuncDec = declaration instanceof FunctionDeclaration;
+    boolean isFuncDec = declaration instanceof FunctionDec;
     if (isVarDec) { // is a variable declaration
       visit((VarDec)declaration, level);
     } else if (isFuncDec) { // is a func declaration
@@ -172,17 +172,19 @@ public class ShowTreeVisitor implements AbsynVisitor {
       visit((VarExp)expr, level);
     } else { // invalid expressions
       indent(level);
-      System.out.println("Illegal Expression... Row: " + exp.row + " Col: " + exp.col);
+      System.out.println("Illegal Expression... Row: " + expr.row + " Col: " + expr.col);
     }
   }
 
-  // functions have multiple steps down the tree, indent on each step
-  //TODO: finish print function 
   public void visit(FunctionDec expr, int level) {
     indent(level);
     System.out.println( "FunctionDec: " );
     level++;
-    visit(exp.type, level);
+    visit(expr.ret_type, level);
+    indent(level);
+    System.out.println("Function: " + expr.func);
+    visit(expr.params_list, level);
+    visit(expr.body, level);
   }
 
   public void visit(NilExp expr, int level) {
@@ -259,7 +261,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
     indent(level);
     System.out.println( "WhileExp: " );
     level++;
-    visit(expr.text, level);
+    visit(expr.test, level);
     visit(expr.body, level);
   }
 
@@ -267,7 +269,17 @@ public class ShowTreeVisitor implements AbsynVisitor {
     indent(level);
     System.out.println( "CompoundExp: " );
     level++;
-    visit(exp.decList, level);
-    visit(exp.expList, level);
+    visit(expr.decs, level);
+    visit(expr.exps, level);
+  }
+
+  public void visit (Type ty, int level) {
+    if (ty.type == Type.INT) {
+      System.out.println( "Type: Integer");
+    } else if(ty.type == Type.VOID) {
+        System.out.println( "Type: Void");
+    } else if(ty.type == Type.BOOL) {
+        System.out.println( "Type: Boolean");
+    }
   }
 }
