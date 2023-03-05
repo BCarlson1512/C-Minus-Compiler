@@ -194,9 +194,7 @@ local_declarations::= local_declarations:ld var_declaration:vd
 
 statement_list    ::= statement_list:sl statement:s
                     {: RESULT = sl; :}
-                  | {:
-                      RESULT = null;
-                    :} 
+                  | 
                   ;
                 
 statement         ::= exp_stmt:es 
@@ -209,6 +207,11 @@ statement         ::= exp_stmt:es
                     {: RESULT = is; :}
                   | return_stmt:rs 
                     {: RESULT = rs; :}
+                  | error:e SEMI
+                    {: 
+                      parser.report_error("Invalid statement", e);
+                      RESULT = new ReturnExp(eleft, eright, new NilExp(eleft, eright));
+                    :}
                   ;
                 
 exp_stmt          ::= exp:e SEMI 
@@ -269,13 +272,18 @@ exp              ::= exp:s1 LT exp:s2
                   | LEFT_BRAC exp:e RIGHT_BRAC
                  {: RESULT = e; :}
                   | var:v
-                    {: RESULT = new VarExp(vleft,vright,v); :}
+                {: RESULT = new VarExp(vleft,vright,v); :}
                   | call:c
-                    {: RESULT = c; :}
+                {: RESULT = c; :}
                   | NUM:n
-                    {: RESULT = new IntExp(nleft, nright, n); :}
+                {: RESULT = new IntExp(nleft, nright, n); :}
                   | TRUTH:b
-                    {: RESULT = new BoolExp(bleft,bright,Boolean.parseBoolean(b)); :}
+                {: RESULT = new BoolExp(bleft,bright,Boolean.parseBoolean(b)); :}
+                  | error:e
+                {: 
+                  parser.report_error("Invalid expression", e);
+                  RESULT = new ReturnExp(eleft, eright, new NilExp(eleft, eright));
+                :}
                ;
 
 
