@@ -101,13 +101,6 @@ public class ShowTreeVisitor implements AbsynVisitor {
     exp.test.accept( this, level ); 
   }
 
-  public void visit( VarExp exp, int level ) {
-    indent( level );
-    System.out.println( "VarExp: ");
-    level++;
-    visit(exp.var, level);
-  }
-
   public void visit( WriteExp exp, int level ) {
     indent( level );
     System.out.println( "WriteExp: " );
