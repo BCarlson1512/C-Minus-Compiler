@@ -146,7 +146,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
       visit((FunctionDec)declaration, level);
     } else { // is simple/Illegal declaration
       indent(level);
-      System.out.println( "Illegal Expression/Declaration... Row: " + declaration.row + " Col: " + declaration.col );
+      System.out.println( "Illegal Declaration... Row: " + declaration.row + " Col: " + declaration.col );
     }
   }
 
@@ -170,10 +170,20 @@ public class ShowTreeVisitor implements AbsynVisitor {
       visit((IntExp)expr, level);
     } else if (expr instanceof VarExp) {
       visit((VarExp)expr, level);
+    } else if (expr instanceof BoolExp) {
+      visit((BoolExp)expr, level);
     } else { // invalid expressions
       indent(level);
       System.out.println("Illegal Expression... Row: " + expr.row + " Col: " + expr.col);
     }
+  }
+
+  public void visit(BoolExp expr, int level) {
+    indent(level);
+    System.out.println( "BoolExp: " );  
+    level++;
+    indent(level);
+    System.out.println(expr.value);
   }
 
   public void visit(FunctionDec expr, int level) {
@@ -245,7 +255,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
       visit((ArrayDec)expr, level);
     } else { // invalid cases
       indent(level);
-      System.out.println("Illegal Expression/Var... Row: " + expr.row + " Col: " + expr.col);
+      System.out.println("Illegal VarDeclaration... Row: " + expr.row + " Col: " + expr.col);
     }
   }
 
