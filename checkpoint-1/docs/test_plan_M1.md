@@ -9,12 +9,12 @@
 - [x] fac.cm
 - [x] booltest.cm
 - [x] gcd.cm
-- [ ] sort.cm (Stackoverflow printing)
+- [x] sort.cm
 - [x] mutual.cm
 
 ### User files
 
-- [ ] ex1.cm
+- [x] ex1.cm
 - [ ] ex2.cm
 - [ ] ex3.cm
 - [ ] ex4.cm
@@ -24,35 +24,34 @@
 
 ### Ex1.cm
 
-- Explanation of what this file demonstrates
-  - [ ] Status of test 1
-  - [ ] Status of test 2
-- Testing status: Working/Not Working/ Etc.
+- This file demonstrates deep nesting of if conditions
+  - [x] Generates Syntax tree
+- Testing status: Working.
 
 ### Ex2.cm
 
-- Explanation of what this file demonstrates
-  - [ ] Status of test 1
-  - [ ] Status of test 2
-- Testing status: Working/Not Working/ Etc.
+- This file demonstrates error recovery from conditional syntax errors
+  - [x] 1+1 == 0
+  - [x] 5+5 == 10
+- Testing status: Working.
 
 ### Ex3.cm
 
-- Explanation of what this file demonstrates
-  - [ ] Status of test 1
-  - [ ] Status of test 2
-- Testing status: Working/Not Working/ Etc.
+- This file contains two syntactical errors b2b
+  - [x] int main(it p)
+- Testing status: Working.
 
 ### Ex4.cm
 
-- Explanation of what this file demonstrates
+- This file should throw multiple compile time errors, while creating a proper AST
   - [ ] Status of test 1
   - [ ] Status of test 2
-- Testing status: Working/Not Working/ Etc.
+  - [ ] Status of test 3
+- Testing status: Partially working.
 
 ### Ex5.cm
 
-- Explanation of what this file demonstrates
+- The pinnacle of unhinged behavior... This file creates a freaking arrow... yeah you heard me an arrow...
   - [ ] Status of test 1
   - [ ] Status of test 2
 - Testing status: Working/Not Working/ Etc.

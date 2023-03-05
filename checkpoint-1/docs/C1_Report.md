@@ -62,7 +62,8 @@ This program will generate a syntax tree of the following code files:
 
 Assumptions:
 
--
+- Declarations have to come before statements
+  - ie: `int i;` needs to come before `if (v == 0)`
 
 Limitations:
 
