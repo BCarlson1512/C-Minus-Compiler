@@ -16,7 +16,7 @@ public class CallExp extends Exp {
         int paramsCount = 0;
         while (temp != null) {
             temp = temp.tail;
-            count++;
+            paramsCount++;
         }
         return paramsCount;
     }
