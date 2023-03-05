@@ -70,7 +70,7 @@ parser code {:
 
 /* -- TERMINALS -- */
 
-terminal IF, ELSE, INT, RETURN, VOID, WHILE;
+terminal IF, ELSE, INT, RETURN, VOID, WHILE, UMINUS;
 terminal EQ, LT, GT, LTE, GTE, EQEQ, NOTEQ, OR, AND, NOT;
 terminal SEMI, COMMA;
 terminal LEFT_SQ_BRAC, RIGHT_SQ_BRAC, LEFT_BRAC, RIGHT_BRAC,LEFT_CURLY_BRAC,RIGHT_CURLY_BRAC;
@@ -86,7 +86,7 @@ non terminal Var var;
 non terminal VarDec var_declaration, param;
 non terminal VarDecList params, param_list, local_declarations;
 non terminal ExpList statement_list, args, arg_list;
-non terminal Exp statement, exp_stmt, selection_stmt, iteration_stmt, return_stmt, obool_exp, abool_exp, ubool_exp, add_exp, term, call, factor, signed_factor, simple_exp;
+non terminal Exp statement, exp_stmt, selection_stmt, iteration_stmt, return_stmt, call;
 non terminal Exp exp;   
 non terminal Type type_specifier;
 non terminal CompoundExp compound_stmt;
@@ -94,7 +94,6 @@ non terminal CompoundExp compound_stmt;
 non terminal Dec declaration, fun_declaration, fun_prototype;
 non terminal DecList program, declaration_list;
 
-non terminal Integer relop, addop, mulop;
 
 /* PRECEDENCE */
 
@@ -230,85 +229,40 @@ return_stmt       ::= RETURN exp:e SEMI
                   | RETURN SEMI:s
                     {: RESULT = new ReturnExp(sleft, sright, null); :}
                   ;
-exp               ::= var:v EQ exp:e
-                    {: RESULT = new AssignExp(vleft, vright, v, e); :}
-                  | obool_exp:o
-                    {: RESULT = o; :}
-                  ;
-var               ::= ID:i
-                    {: RESULT = new SimpleVar(ileft, iright, i); :}
-                  | ID:i LEFT_SQ_BRAC exp:e RIGHT_SQ_BRAC
-                    {: RESULT = new IndexVar(ileft, iright, i, e); :}
-                  ;
 
-obool_exp         ::= obool_exp:e1 OR abool_exp:e2
-                    {: RESULT = new OpExp(e1left, e1right, e1, OpExp.OR, e2); :}
-                  | abool_exp:a
-                    {: RESULT = a; :}
-                  ;
-
-abool_exp         ::= abool_exp:e1 AND abool_exp:e2
-                    {: RESULT = new OpExp(e1left, e1right, e1, OpExp.AND, e2); :}
-                  | ubool_exp:u
-                    {: RESULT = u; :}
-                  ;
-
-ubool_exp         ::= NOT ubool_exp:u
-                    {: RESULT = new OpExp(uleft, uright, null, OpExp.NOT, u); :}
-                  ;
-
-simple_exp        ::= add_exp:a relop:r add_exp:b
-                    {: RESULT = new OpExp(aleft, aright, a, r, b); :}
-                  | add_exp:a
-                    {: RESULT = a; :}
-                  ;
-
-relop             ::= LT
-                    {: RESULT = OpExp.LT; :}
-                  | GT
-                    {: RESULT = OpExp.GT; :}
-                  | EQEQ
-                    {: RESULT = OpExp.EQEQ; :}
-                  | LTE
-                    {: RESULT = OpExp.LTE; :}
-                  | GTE
-                    {: RESULT = OpExp.GTE; :}
-                  | NOTEQ
-                    {: RESULT = OpExp.NOTEQ; :}
-                  ;
-
-add_exp           ::= add_exp:a addop:o term:t
-                    {: RESULT = new OpExp(aleft, aright, a, o, t); :}
-                  | term:t
-                    {: RESULT = t; :}
-                  ;
-
-addop             ::= PLUS
-                    {: RESULT = OpExp.PLUS; :}
-                  | MINUS
-                    {: RESULT = OpExp.MINUS; :}
-                  ;
-
-term              ::= term:t mulop:m signed_factor:f
-                    {: RESULT = new OpExp(tleft, tright, t, m, f); :}
-                  | signed_factor:f
-                    {: RESULT = f; :}
-                  ;
-
-mulop             ::= TIMES
-                    {: RESULT = OpExp.TIMES; :}
-                  | DIVIDE
-                    {: RESULT = OpExp.DIVIDE; :}
-                  ;
-
-signed_factor     ::= MINUS signed_factor:f
-                    {: RESULT = f; :}
-                  | factor:f
-                    {: RESULT = f; :}
-                  ;
-
-factor            ::= LEFT_BRAC exp:e RIGHT_BRAC
-                    {: RESULT = e; :}
+exp              ::= exp:s1 LT exp:s2
+                 {: RESULT = new OpExp(s1left, s1right, s1, OpExp.LT, s2); :}
+                  | exp:s1 GT exp:s2
+                 {: RESULT = new OpExp(s1left, s1right, s1, OpExp.GT, s2); :}
+                  | exp:s1 EQEQ exp:s2
+                 {: RESULT = new OpExp(s1left, s1right, s1, OpExp.EQEQ, s2); :}
+                  | exp:s1 NOTEQ exp:s2
+                 {: RESULT = new OpExp(s1left, s1right, s1, OpExp.NOTEQ, s2); :}
+                  | exp:s1 LTE exp:s2
+                 {: RESULT = new OpExp(s1left, s1right, s1, OpExp.LTE, s2); :}
+                  | exp:s1 GTE exp:s2
+                 {: RESULT = new OpExp(s1left, s1right, s1, OpExp.GTE, s2); :}
+                   | exp:s1 EQ exp:s2
+                 {: RESULT = new OpExp(s1left, s1right, s1, OpExp.EQ, s2); :}
+                  | exp:s1 PLUS exp:s2
+                 {: RESULT = new OpExp(s1left, s1right, s1, OpExp.PLUS, s2); :}
+                  | exp:s MINUS exp:t
+                 {: RESULT = new OpExp(sleft, sright, s, OpExp.MINUS, t); :}
+                  | exp:t TIMES exp:f
+                 {: RESULT = new OpExp(tleft, tright, t, OpExp.TIMES, f); :}
+                   | exp:t DIVIDE exp:f
+                 {: RESULT = new OpExp(tleft, tright, t, OpExp.DIVIDE, f); :}
+                   | exp:e1 OR exp:e2
+                 {: RESULT = new OpExp(e1left, e1right, e1, OpExp.OR, e2); :}
+                   | exp:e1 AND exp:e2
+                 {: RESULT = new OpExp(e1left, e1right, e1, OpExp.AND, e2); :}
+                   | NOT exp:u
+                 {: RESULT = new OpExp(uleft, uright, null, OpExp.NOT, u); :}
+                  | MINUS:m exp:f
+                 {: RESULT = new OpExp(mleft, mright, null, OpExp.UMINUS, f); :}
+                 %prec UMINUS
+                  | LEFT_BRAC exp:e RIGHT_BRAC
+                 {: RESULT = e; :}
                   | var:v
                     {: RESULT = new VarExp(vleft,vright,v); :}
                   | call:c
@@ -317,7 +271,15 @@ factor            ::= LEFT_BRAC exp:e RIGHT_BRAC
                     {: RESULT = new IntExp(nleft, nright, n); :}
                   | TRUTH:b
                     {: RESULT = new BoolExp(bleft,bright,Boolean.parseBoolean(b)); :}
+               ;
+
+
+var               ::= ID:i
+                    {: RESULT = new SimpleVar(ileft, iright, i); :}
+                  | ID:i LEFT_SQ_BRAC exp:e RIGHT_SQ_BRAC
+                    {: RESULT = new IndexVar(ileft, iright, i, e); :}
                   ;
+
 
 call              ::= ID:i LEFT_BRAC args:a RIGHT_BRAC
                     {: RESULT = new CallExp(ileft, iright, i, a); :}
@@ -336,5 +298,5 @@ arg_list          ::= arg_list:a COMMA exp:e
                      RESULT = a;
                     :}
                   | exp:e
-                    {: RESULT = new ExpList(eleft, eright, e, null); :}
+                    {: RESULT = new ExpList(e, null); :}
                   ;

@@ -17,6 +17,7 @@ public class OpExp extends Exp {
   public final static int AND = 12;
   public final static int OR = 13;
   public final static int NOT = 14;
+  public final static int UMINUS = 15;
 
   public Exp left;
   public int op;

@@ -19,6 +19,16 @@ class Main {
   static public void main(String argv[]) {    
     /* Start the parser */
     try {
+      if (argv[0]=="-a" && argv.length==2){
+        // Get file
+        // Make sure file exists
+        // Second arg is input file
+        // Output file is INPUT_FILE.abs
+        // Make sure errors print to stderr
+
+        // TODO double check this bad boy
+        System.setOut(new PrintStream(new FileOutputStream(argv[1]+".abs")));
+      }
       Lexer scanner = new Lexer(new FileReader(argv[0])); 
       parser p = new parser(new Lexer(new FileReader(argv[0])));
       Absyn result = (Absyn)(p.parse().value);      
