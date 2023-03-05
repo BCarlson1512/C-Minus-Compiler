@@ -38,6 +38,8 @@ public interface AbsynVisitor {
 
   public void visit( SimpleVar expr, int level);
 
+  public void visit( IndexVar expr, int level);
+
   public void visit( Var expr, int level);
 
   public void visit( VarDec expr, int level);

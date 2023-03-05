@@ -219,6 +219,14 @@ public class ShowTreeVisitor implements AbsynVisitor {
     System.out.println("SimpleVar name: " + expr.name);
   }
 
+  public void visit(IndexVar expr, int level) {
+    indent(level);
+    System.out.println( "IndexVar: " );
+    level++;
+    indent(level);
+    System.out.println("IndexVar name: " + expr.name);
+  }
+
   public void visit(Var expr, int level) {
     if (expr instanceof SimpleVar) {
       visit((SimpleVar)expr, level);
