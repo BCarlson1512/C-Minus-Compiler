@@ -26,12 +26,14 @@ class Main {
       Boolean outputAbsyn = false;
 
       // Do we have -a in our args list?
-      if (argv[0].equals("-a")) {
-        fileName = argv[1];
-        outputAbsyn = true;
-      } else if (argv[1].equals("-a")) {
-        fileName = argv[0];
-        outputAbsyn = true;
+      if (argv.length == 2){
+        if (argv[0].equals("-a")) {
+          fileName = argv[1];
+          outputAbsyn = true;
+        } else if (argv[1].equals("-a")) {
+          fileName = argv[0];
+          outputAbsyn = true;
+        }
       }
 
       if (outputAbsyn) {
