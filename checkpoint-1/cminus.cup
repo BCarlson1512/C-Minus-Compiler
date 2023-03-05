@@ -96,6 +96,17 @@ non terminal DecList program, declaration_list;
 
 non terminal Integer relop, addop, mulop;
 
+/* PRECEDENCE */
+
+precedence left ELSE;
+precedence left AND;
+precedence left OR;
+
+precedence nonassoc LT, GT, EQ;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE; 
+// precedence right UMINUS; 
+
 /* -- Grammar Section -- */
 
 start with program;
@@ -182,7 +193,9 @@ local_declarations::= local_declarations:ld var_declaration:vd
 
 statement_list    ::= statement_list:sl statement:s
                     {: RESULT = sl; :}
-                  | VOID:v 
+                  | {:
+                      RESULT = null;
+                    :} 
                   ;
                 
 statement         ::= exp_stmt:es 
