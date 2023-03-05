@@ -20,7 +20,7 @@ public class FunctionDec extends Dec {
         this.func = func;
         this.params_list = params_list;
         this.body = body;
-        this.ret_type = ret_type;
+        this.ret_type = res;
     }
     public void accept( AbsynVisitor visitor, int level ) {
         visitor.visit( this, level );
