@@ -1,0 +1,5 @@
+/* A test file that contains two syntactic errors */
+
+int main(it p) {
+  return 1;
+}
