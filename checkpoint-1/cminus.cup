@@ -78,7 +78,6 @@ terminal PLUS, MINUS, TIMES, DIVIDE;
 terminal Integer NUM;
 terminal String ID;
 terminal Boolean BOOL;
-terminal ERROR;
 
 /* -- NON TERMINALS -- */
 
