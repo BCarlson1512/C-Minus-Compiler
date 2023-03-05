@@ -128,9 +128,9 @@ COMMENT = \/\*.*?\*\/
 "*"            {return symbol(sym.TIMES);}
 "/"           {return symbol(sym.DIVIDE);}
 
+{TRUTH}           {return symbol(sym.TRUTH, yytext());}
 {ID}              { return symbol(sym.ID, yytext()); }
 {NUM}             { return symbol(sym.NUM, Integer.parseInt(yytext())); }
-{TRUTH}           {return symbol(sym.TRUTH, yytext());}
 {WhiteSpace}           { /* Skip Whitespace */  }
 {COMMENT}         { /* Do Nothing */  }
 

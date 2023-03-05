@@ -234,6 +234,11 @@ exp              ::= exp:s1 LT exp:s2
                  {: RESULT = new OpExp(s1left, s1right, s1, OpExp.LT, s2); :}
                   | exp:s1 GT exp:s2
                  {: RESULT = new OpExp(s1left, s1right, s1, OpExp.GT, s2); :}
+                   | var:s1 EQ exp:s2
+                 {: 
+                  VarExp v = new VarExp(s1left, s1right, s1);
+                  RESULT = new AssignExp(s1left, s1right, v, s2);
+                  :}
                   | exp:s1 EQEQ exp:s2
                  {: RESULT = new OpExp(s1left, s1right, s1, OpExp.EQEQ, s2); :}
                   | exp:s1 NOTEQ exp:s2
@@ -242,8 +247,6 @@ exp              ::= exp:s1 LT exp:s2
                  {: RESULT = new OpExp(s1left, s1right, s1, OpExp.LTE, s2); :}
                   | exp:s1 GTE exp:s2
                  {: RESULT = new OpExp(s1left, s1right, s1, OpExp.GTE, s2); :}
-                   | exp:s1 EQ exp:s2
-                 {: RESULT = new OpExp(s1left, s1right, s1, OpExp.EQ, s2); :}
                   | exp:s1 PLUS exp:s2
                  {: RESULT = new OpExp(s1left, s1right, s1, OpExp.PLUS, s2); :}
                   | exp:s MINUS exp:t
