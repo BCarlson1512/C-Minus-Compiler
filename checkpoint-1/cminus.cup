@@ -78,6 +78,7 @@ terminal PLUS, MINUS, TIMES, DIVIDE;
 terminal Integer NUM;
 terminal String ID;
 terminal Boolean BOOL;
+terminal String TRUTH;
 
 /* -- NON TERMINALS -- */
 
@@ -237,7 +238,7 @@ exp               ::= var:v EQ exp:e
 var               ::= ID:i
                     {: RESULT = new SimpleVar(ileft, iright, i); :}
                   | ID:i LEFT_SQ_BRAC exp:e RIGHT_SQ_BRAC
-                    {: RESULT = new ArrayDec(ileft, iright, i, e); :}
+                    {: RESULT = new IndexVar(ileft, iright, i, e); :}
                   ;
 
 obool_exp         ::= obool_exp:e1 OR abool_exp:e2
@@ -253,7 +254,7 @@ abool_exp         ::= abool_exp:e1 AND abool_exp:e2
                   ;
 
 ubool_exp         ::= NOT ubool_exp:u
-                    {: RESULT = new OpExp(uleft, uright, OpExp.NOT, u); :}
+                    {: RESULT = new OpExp(uleft, uright, null, OpExp.NOT, u); :}
                   ;
 
 simple_exp        ::= add_exp:a relop:r add_exp:b
@@ -314,7 +315,7 @@ factor            ::= LEFT_BRAC exp:e RIGHT_BRAC
                     {: RESULT = c; :}
                   | NUM:n
                     {: RESULT = new IntExp(nleft, nright, n); :}
-                  | BOOL:b
+                  | TRUTH:b
                     {: RESULT = new BoolExp(bleft,bright,Boolean.parseBoolean(b)); :}
                   ;
 

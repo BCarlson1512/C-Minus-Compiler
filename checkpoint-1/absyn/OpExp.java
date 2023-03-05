@@ -14,7 +14,6 @@ public class OpExp extends Exp {
   public final static int LTE = 10;
   public final static int DIVIDE = 11;
 
-  // TODO unsure about these
   public final static int AND = 12;
   public final static int OR = 13;
   public final static int NOT = 14;
@@ -24,15 +23,15 @@ public class OpExp extends Exp {
   public Exp right;
 
   /**
-  *    @param row -> (int) row location in the program
-  *    @param col -> (int) column location on row in the program
+  *    @param l -> (int) row location in the program
+  *    @param r -> (int) column location on row in the program
   *    @param left -> (Exp) an expression following the if condition
   *    @param op -> (Exp) Lhs part of an expression (can be null)
   *    @param right -> (Exp) The rhs part of an expression 
   */
-  public OpExp( int row, int col, Exp left, int op, Exp right ) {
-    this.row = row;
-    this.col = col;
+  public OpExp( int l, int r, Exp left, int op, Exp right ) {
+    this.row = l;
+    this.col = r;
     this.left = left;
     this.op = op;
     this.right = right;

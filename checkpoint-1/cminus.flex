@@ -79,6 +79,8 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
 ID = [_a-zA-Z][_a-zA-Z0-9]*
 NUM = [0-9]+
 
+TRUTH = true|false
+
 // should work on all classic c-style comments
 COMMENT = \/\*.*?\*\/
 
@@ -128,7 +130,9 @@ COMMENT = \/\*.*?\*\/
 
 {ID}              { return symbol(sym.ID, yytext()); }
 {NUM}             { return symbol(sym.NUM, Integer.parseInt(yytext())); }
+{TRUTH}           {return symbol(sym.TRUTH, yytext());}
 {WhiteSpace}           { /* Skip Whitespace */  }
 {COMMENT}         { /* Do Nothing */  }
+
 // .                 {return symbol(sym.ERROR)}
 .                 {/**/}
