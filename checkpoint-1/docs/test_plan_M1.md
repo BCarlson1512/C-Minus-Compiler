@@ -1,16 +1,16 @@
 # Testing Plan
 
-## Current status
+## Current status (M1)
 
 - Bash script that will compile all compiler related files and test against all supplied .cm files
 
 ### Provided files
 
-- [ ] fac.cm
-- [ ] booltest.cm
-- [ ] gcd.cm
-- [ ] sort.cm
-- [ ] mutual.cm
+- [x] fac.cm
+- [x] booltest.cm
+- [x] gcd.cm
+- [ ] sort.cm (Stackoverflow printing)
+- [x] mutual.cm
 
 ### User files
 
