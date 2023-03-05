@@ -237,7 +237,7 @@ exp               ::= var:v EQ exp:e
 var               ::= ID:i
                     {: RESULT = new SimpleVar(ileft, iright, i); :}
                   | ID:i LEFT_SQ_BRAC exp:e RIGHT_SQ_BRAC
-                    {: RESULT = new ArrayDec(ileft, iright, i, e); :}
+                    {: RESULT = new IndexVar(ileft, iright, i, e); :}
                   ;
 
 obool_exp         ::= obool_exp:e1 OR abool_exp:e2
