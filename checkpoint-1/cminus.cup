@@ -191,7 +191,7 @@ param_list        ::= param_list:pl COMMA param:p
 
 param             ::= type_specifier:t ID:i 
                     {: RESULT = new SimpleDec(tleft, tright, t, i); :}
-                  | type_specifier:t ID:i RIGHT_SQ_BRAC LEFT_SQ_BRAC 
+                  | type_specifier:t ID:i LEFT_SQ_BRAC RIGHT_SQ_BRAC
                     {: RESULT = new ArrayDec(tleft, tright, t, i, null); :}
                   ;
 
@@ -203,15 +203,6 @@ local_declarations::= local_declarations:ld var_declaration:vd
                     {: RESULT = new VarDecList(vd, ld); :}
                   | 
                   ;
-
-/*                   var_declaration: v
-                  {: RESULT = new VarDecList(v, null); :}
-                  | error:e var_declaration:v
-                  {:
-                    parser.report_error ("Syntax error in local declarations", e);
-                    RESULT = new VarDecList(v, null);
-                  :}
-*/
 
 statement_list    ::= statement_list:sl statement:s
                     {: RESULT = new ExpList(s, sl); :}
