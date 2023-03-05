@@ -80,6 +80,7 @@ Limitations:
 - Implemented CUP matching rules
 - Aided in debugging CUP rules
 - Extended JFlex rules
+- Implemented logic within CUP rules
 
 ### Ben
 
