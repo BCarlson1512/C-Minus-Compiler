@@ -15,6 +15,10 @@ When creating the program, we attempted to follow best practices of OOP
 
 ### Conor
 
+- Implemented CUP matching rules
+- Aided in debugging CUP rules
+- Extended JFlex rules
+
 ### Ben
 
 - Created AST
