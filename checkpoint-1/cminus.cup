@@ -107,7 +107,6 @@ precedence left PLUS, MINUS;
 precedence left TIMES, DIVIDE; 
 precedence left BOOL;
 precedence left ELSE, INT, SEMI, VOID;
-// precedence right UMINUS; 
 
 /* -- Grammar Section -- */
 
@@ -192,7 +191,7 @@ param_list        ::= param_list:pl COMMA param:p
 
 param             ::= type_specifier:t ID:i 
                     {: RESULT = new SimpleDec(tleft, tright, t, i); :}
-                  | type_specifier:t ID:i LEFT_SQ_BRAC RIGHT_SQ_BRAC
+                  | type_specifier:t ID:i RIGHT_SQ_BRAC LEFT_SQ_BRAC 
                     {: RESULT = new ArrayDec(tleft, tright, t, i, null); :}
                   ;
 
@@ -201,7 +200,7 @@ compound_stmt     ::= LEFT_CURLY_BRAC:lc local_declarations:ld statement_list:sl
                   ;
 
 local_declarations::= local_declarations:ld var_declaration:vd  
-                    {: RESULT = ld; :}
+                    {: RESULT = new VarDecList(vd, ld); :}
                   | 
                   ;
 
@@ -260,8 +259,7 @@ return_stmt       ::= RETURN:r SEMI
 exp              ::= exp:s1 LT exp:s2
                  {: RESULT = new OpExp(s1left, s1right, s1, OpExp.LT, s2); :}
                   | exp:s1 GT exp:s2
-                 {: 
-                 RESULT = new OpExp(s1left, s1right, s1, OpExp.GT, s2); :}
+                 {: RESULT = new OpExp(s1left, s1right, s1, OpExp.GT, s2); :}
                   | exp:s1 EQEQ exp:s2
                  {: RESULT = new OpExp(s1left, s1right, s1, OpExp.EQEQ, s2); :}
                    | var:s1 EQ exp:s2
