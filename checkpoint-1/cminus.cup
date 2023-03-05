@@ -86,7 +86,7 @@ non terminal Var var;
 non terminal VarDec var_declaration, param;
 non terminal VarDecList params, param_list, local_declarations;
 non terminal ExpList statement_list, args, arg_list;
-non terminal Exp if_stmt, repeat_stmt, assign_stmt, read_stmt, write_stmt, statement, exp_stmt, selection_stmt, iteration_stmt, return_stmt, obool_exp, abool_exp, ubool_exp, add_exp, term, call, factor, signed_factor, simple_exp;
+non terminal Exp statement, exp_stmt, selection_stmt, iteration_stmt, return_stmt, obool_exp, abool_exp, ubool_exp, add_exp, term, call, factor, signed_factor, simple_exp;
 non terminal Exp exp;   
 non terminal Type type_specifier;
 non terminal CompoundExp compound_stmt;
@@ -102,7 +102,7 @@ precedence left ELSE;
 precedence left AND;
 precedence left OR;
 
-precedence nonassoc LT, GT, EQ;
+precedence nonassoc LT, GT, EQ, LTE, GTE, EQEQ, NOTEQ;
 precedence left PLUS, MINUS;
 precedence left TIMES, DIVIDE; 
 // precedence right UMINUS; 
@@ -325,12 +325,16 @@ call              ::= ID:i LEFT_BRAC args:a RIGHT_BRAC
 
 args              ::= arg_list:a
                     {: RESULT = a; :}
-                  | VOID:v
-                    {: RESULT = null; :}
+                  |
                   ;
 
 arg_list          ::= arg_list:a COMMA exp:e
-                    {: RESULT = a; :}
+                    {: ExpList t = a;
+                     while( t.tail != null )
+                        t = t.tail;
+                     t.tail = new ExpList(e, null);
+                     RESULT = a;
+                    :}
                   | exp:e
                     {: RESULT = new ExpList(eleft, eright, e, null); :}
                   ;
