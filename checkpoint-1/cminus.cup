@@ -217,8 +217,7 @@ exp_stmt          ::= exp:e SEMI
                   ;
                 
 selection_stmt    ::= IF LEFT_BRAC exp:e RIGHT_BRAC statement:s
-                    {: 
-                    RESULT = new IfExp(eleft, eright, e, s, null); :} 
+                    {: RESULT = new IfExp(eleft, eright, e, s, null); :} 
                   | IF LEFT_BRAC exp:e RIGHT_BRAC statement:s1 ELSE statement:s2
                     {: RESULT = new IfExp(eleft, eright, e, s1, s2); :}
                   ;
@@ -227,10 +226,10 @@ iteration_stmt    ::= WHILE LEFT_BRAC exp:e RIGHT_BRAC statement:s
                     {: RESULT = new WhileExp(sleft, sright, e, s); :}
                   ;
 
-return_stmt       ::= RETURN exp:e SEMI
+return_stmt       ::= RETURN:r SEMI
+                    {: RESULT = new ReturnExp(rleft, rright, null); :}
+                  | RETURN exp:e SEMI:s
                     {: RESULT = new ReturnExp(eleft, eright, e); :}
-                  | RETURN SEMI:s
-                    {: RESULT = new ReturnExp(sleft, sright, null); :}
                   ;
 
 exp              ::= exp:s1 LT exp:s2
