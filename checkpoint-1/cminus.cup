@@ -198,14 +198,17 @@ compound_stmt     ::= LEFT_CURLY_BRAC:lc local_declarations:ld statement_list:sl
 
 local_declarations::= local_declarations:ld var_declaration:vd  
                     {: RESULT = ld; :}
-                  | var_declaration: v
+                  | 
+                  ;
+
+/*                   var_declaration: v
                   {: RESULT = new VarDecList(v, null); :}
                   | error:e var_declaration:v
                   {:
                     parser.report_error ("Syntax error in local declarations", e);
                     RESULT = new VarDecList(v, null);
                   :}
-                  ;
+*/
 
 statement_list    ::= statement_list:sl statement:s
                     {: RESULT = sl; :}
