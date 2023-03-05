@@ -292,6 +292,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
   }
 
   public void visit (Type ty, int level) {
+    indent(level);
     if (ty.type == Type.INT) {
       System.out.println( "Type: Integer");
     } else if(ty.type == Type.VOID) {
