@@ -4,8 +4,8 @@ void main(bool p) {
 
   int x = 5
 
-  if (x=5)
-    return void;
+  if (x=5){
+    retun void;
   }
 
   int y = 5;
