@@ -38,6 +38,8 @@ Once the scanner was built, we split into two. The parser and absyn classes coul
 
 ### Parser
 
+We first laid out a skeleton for the CUP rules by translating the specification file provided. Then, we were able to fill in the body of each CUP rule with our class definitions based on our understanding of the content tom be matched. Finally, we added error checking on to as many common error cases as we could so that users would be informed of syntax issues.
+
 ### Debugging
 
 We grouped up again and pair programmed the remaining aspects of this milestone as well as debugging the entire program start-to-finish. This program was hard to debug in separate modules, due to the output of Scanner.java and its relation to cup. We ended up clearing all of our errors and warnings before moving onto testing our provided and custom files.
