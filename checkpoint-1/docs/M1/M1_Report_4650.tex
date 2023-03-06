@@ -64,28 +64,36 @@ We first laid out a skeleton for the CUP rules by translating the specification 
 \textbf{Debugging} \\
 We grouped up again and pair programmed the remaining aspects of this milestone as well as debugging the entire program start-to-finish. This program was hard to debug in separate modules, due to the output of Scanner.java and its relation to cup. We ended up clearing all of our errors and warnings before moving onto testing our provided and custom files.
 
-\textbf{Assumptions/Limitations}
+\textbf{Learning Experiences}
+\begin{itemize}
+    \item Learned about different modules of a compiler and their interaction
+    \item learned how compilers verify program structure and syntax
+    \item Importance of using version control (git) for increased efficiency and organization
+\end{itemize}
 
-This program requires the following resources
-\begin{enumerate}
-    \item JFlex
-    \item Java/JDK
-    \item CUP/JCUP
-\end{enumerate}
+\begin{multicols}{3}
+    \textbf{Assumptions} \\
+    Required software
+    \begin{enumerate}
+        \item JFlex
+        \item Java/JDK
+        \item CUP/JCUP
+    \end{enumerate}
+    \columnbreak
+    \textbf{Limitations} \\
+    Supported files
+    \begin{enumerate}
+        \item .cm cminus files
+    \end{enumerate}
+    \columnbreak
+    \textbf{Improvements}
+    \begin{enumerate}
+        \item Grammar \\Optimization
+        \item More detailed \\error reporting
+    \end{enumerate}
+\end{multicols}
 
-This program will generate a syntax tree of the following code files:
-\begin{enumerate}
-    \item .cm cminus files
-\end{enumerate}
 
-This program can only handle a much smaller subset of keywords within the c programming lanugage. By design to minimize the scope of the project.
-
-\textbf{Improvements}
-
-\begin{enumerate}
-    \item Further optimizations within our grammar
-    \item More detailed error reporting
-\end{enumerate}
 \textbf{Contributions}
 
 \begin{multicols}{2}
@@ -106,9 +114,6 @@ This program can only handle a much smaller subset of keywords within the c prog
     \item Implemented logic and embedded code in CUP
 \end{enumerate}
 \end{multicols}
-
-
-
 
 \vspace{0.5cm}
 

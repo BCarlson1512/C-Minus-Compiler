@@ -44,10 +44,8 @@
 ### Ex4.cm
 
 - This file should throw multiple compile time errors, while creating a proper AST
-  - [ ] Status of test 1
-  - [ ] Status of test 2
-  - [ ] Status of test 3
-- Testing status: Partially working.
+  - [x] Status of test 1
+- Testing status: Working.
 
 ### Ex5.cm
 
