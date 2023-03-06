@@ -15,10 +15,10 @@
 ### User files
 
 - [x] ex1.cm
-- [ ] ex2.cm
-- [ ] ex3.cm
-- [ ] ex4.cm
-- [ ] ex5.cm
+- [x] ex2.cm
+- [x] ex3.cm
+- [x] ex4.cm
+- [x] ex5.cm
 
 ## Explanations of each file
 
@@ -52,6 +52,5 @@
 ### Ex5.cm
 
 - The pinnacle of unhinged behavior... This file creates a freaking arrow... yeah you heard me an arrow...
-  - [ ] Status of test 1
-  - [ ] Status of test 2
-- Testing status: Working/Not Working/ Etc.
+  - [x] Status of test 1
+- Testing status: Working.
