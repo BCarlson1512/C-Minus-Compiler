@@ -28,6 +28,8 @@ You have two options for running this project:
 
 ### Build/Run test files
 
+see above
+
 ## Dir Structure
 
 This project includes multiple different components to it:
