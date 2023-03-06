@@ -1,4 +1,6 @@
+echo "----- Cleaning Directory -----"
 make clean
+echo "----- Compiling -----"
 make
 echo "----- Testing C1_Provided Files -----"
 java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/fac.cm

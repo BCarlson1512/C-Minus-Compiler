@@ -21,5 +21,35 @@ parser.java: cminus.cup
 	#$(CUP) -dump -expect 3 cminus.cup
 	$(CUP) -expect 3 cminus.cup
 
+Ex1:
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_User/Ex1.cm -a
+
+Ex2:
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_User/Ex2.cm -a
+
+Ex3:
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_User/Ex3.cm -a
+
+Ex4:
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_User/Ex4.cm -a
+
+Ex5:
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_User/Ex5.cm -a
+
+fac:
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/fac.cm -a
+
+gcd:
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/gcd.cm -a
+
+booltest:
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/booltest.cm -a
+
+mutual:
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/mutual.cm -a
+
+sort:
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/sort.cm -a
+
 clean:
-	rm -f parser.java Lexer.java sym.java *.class absyn/*.class *~
+	rm -f parser.java Lexer.java sym.java *.class absyn/*.class *~ *.abs
