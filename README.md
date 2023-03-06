@@ -19,6 +19,13 @@ Current milestone: 1
 
 ## Build/Run
 
+You have two options for running this project:
+
+- 1: use the test scripts (test.sh) and (testast.sh)
+  - these test the ability to print the ast to stdout and to files
+- 2: use makefile rules
+  - See makefile for further explanation
+
 ### Build/Run test files
 
 ## Dir Structure
