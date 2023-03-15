@@ -2,9 +2,9 @@ package absyn;
 
 public class Type extends Absyn {
 
-    public static int VOID = 0;
-    public static int INT = 1;
-    public static int BOOL = 2;
+    public final static int VOID = 0;
+    public final static int INT = 1;
+    public final static int BOOL = 2;
 
     public int type;
 
