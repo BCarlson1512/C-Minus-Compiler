@@ -22,34 +22,34 @@ parser.java: cminus.cup
 	$(CUP) -expect 3 cminus.cup
 
 Ex1:
-	java -cp /usr/share/java/cup.jar:. Main ./test/C1_User/Ex1.cm -a
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_User/Ex1.cm -a -s
 
 Ex2:
-	java -cp /usr/share/java/cup.jar:. Main ./test/C1_User/Ex2.cm -a
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_User/Ex2.cm -a -s
 
 Ex3:
-	java -cp /usr/share/java/cup.jar:. Main ./test/C1_User/Ex3.cm -a
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_User/Ex3.cm -a -s
 
 Ex4:
-	java -cp /usr/share/java/cup.jar:. Main ./test/C1_User/Ex4.cm -a
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_User/Ex4.cm -a -s
 
 Ex5:
-	java -cp /usr/share/java/cup.jar:. Main ./test/C1_User/Ex5.cm -a
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_User/Ex5.cm -a -s
 
 fac:
-	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/fac.cm -a
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/fac.cm -a -s
 
 gcd:
-	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/gcd.cm -a
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/gcd.cm -a -s
 
 booltest:
-	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/booltest.cm -a
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/booltest.cm -a -s
 
 mutual:
-	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/mutual.cm -a
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/mutual.cm -a -s
 
 sort:
-	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/sort.cm -a
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/sort.cm -a -s
 
 clean:
-	rm -f parser.java Lexer.java sym.java *.class absyn/*.class *~ *.abs
+	rm -f parser.java Lexer.java sym.java *.class absyn/*.class *~ *.abs *.sym
