@@ -8,7 +8,7 @@ Project for CIS*4650. (Compilers) Performs Lexical + Syntactic Analysis, Semanti
 - Conor Roberts
 
 Semester: W23
-Current milestone: 1
+Current milestone: 2
 
 ## Acknowledgements/Assumptions
 
