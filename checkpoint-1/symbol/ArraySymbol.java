@@ -11,11 +11,11 @@ public class ArraySymbol extends Symbol {
         this.name = name;
         this.type = type;
         this.offset = offset;
-        this.size = size;
+        this.array_size = size;
     }
     public ArraySymbol(int type, String name, int size) {
         this.name = name;
         this.type = type;
-        this.size = size;
+        this.array_size = size;
     }
 }
