@@ -175,18 +175,72 @@ public class SemanticAnalyzer {
     }
 
     public void visit(AssignExp exp) {
+        // Visit variable and expression
+        visit(exp.lhs.var);
+        visit(exp.rhs);
+
         // Check if the variable is declared before assignment
-        Symbol symbol = table.lookupSymbol(exp.lhs.var.);
-        if (symbol == null) {
-            containsErrors = true;
-            // Error: variable not found
+        Symbol varSymbol = symbolTable.lookupSymbol(exp.lhs.var);
+        if (varSymbol == null) {
+            // Report undeclared variable error
+            reportUndeclaredVariableError(exp.row, exp.col, exp.var.name);
         } else {
-            // Check if the type of expression matches the type of the variable
-            int expType = visit(exp.expression);
-            if (expType != symbol.type) {
-                containsErrors = true;
-                // Error: type mismatch
+            // Check if the types of the left-hand side and right-hand side expressions are
+            // compatible
+            // Assuming that the 'type' field in the Symbol class represents the type of the
+            // variable
+            if (compatibleTypes(varSymbol.type, exp.exp)) {
+                // The types are compatible, continue with the analysis
+            } else {
+                // Report a type error since the types are not compatible
+                reportTypeError(exp.row, exp.col);
             }
+        }
+    }
+
+    private boolean compatibleTypes(int lhsType, Exp rhsExp) {
+        // Assuming that IntExp represents integer expressions
+        if (lhsType == Type.INT && rhsExp instanceof IntExp) {
+            return true;
+        }
+
+        // TODO: Add compatibility checks for other types if necessary
+
+        // The types are not compatible
+        return false;
+    }
+
+    public void visit(ExpList exp) {
+        // Iterate through each expression in the list
+        while (exp != null) {
+            // Visit the current expression
+            visit(exp.head);
+
+            // Move to the next expression in the list
+            exp = exp.tail;
+        }
+    }
+
+    // Generic visit method for expressions
+    // We type cast the expression to the correct type and call the appropriate
+    // visitor method
+    public void visit(Exp exp) {
+        if (exp instanceof ReturnExp) {
+            visit((ReturnExp) exp);
+        } else if (exp instanceof CompoundExp) {
+            visit((CompoundExp) exp);
+        } else if (exp instanceof WhileExp) {
+            visit((WhileExp) exp);
+        } else if (exp instanceof IfExp) {
+            visit((IfExp) exp);
+        } else if (exp instanceof AssignExp) {
+            visit((AssignExp) exp);
+        } else if (exp instanceof OpExp) {
+            visit((OpExp) exp);
+        } else if (exp instanceof CallExp) {
+            visit((CallExp) exp);
+        } else if (exp instanceof VarExp) {
+            visit((VarExp) exp);
         }
     }
 
@@ -203,35 +257,60 @@ public class SemanticAnalyzer {
     }
 
     public void visit(OpExp exp) {
+        // Visit left and right operands
         visit(exp.left);
         visit(exp.right);
 
-        // Check the types of the operands and the compatibility with the operator
-        int leftType = visit(exp.left);
-        int rightType = visit(exp.right);
-
-        if (leftType != rightType || leftType != Type.INT) {
-            containsErrors = true;
-            // Error: type mismatch or invalid type for operator
+        // Check if the operator is a relational, logical, or arithmetic operator
+        if (isRelationalOperator(exp.op) || isLogicalOperator(exp.op)) {
+            // Handle boolean expression
+            if (!(exp.left instanceof IntExp) || !(exp.right instanceof IntExp)) {
+                // Report a type error since both operands should be integers for relational and
+                // logical operators
+                reportTypeError(exp.row, exp.col);
+            } else {
+            }
+        } else if (isArithmeticOperator(exp.op)) {
+            // Handle arithmetic operators
+            if (!(exp.left instanceof IntExp) || (exp.right instanceof IntExp)) {
+                // Report a type error since both operands should be integers for arithmetic
+                // operators
+                reportTypeError(exp.row, exp.col);
+            }
+        } else {
+            // Handle other types of operators (unary operators, etc.)
+            // Check if the types are correct for the specific operator
         }
     }
 
+    private boolean isRelationalOperator(int op) {
+        return op == OpExp.LT || op == OpExp.LTE || op == OpExp.GT || op == OpExp.GTE || op == OpExp.EQ
+                || op == OpExp.NOTEQ;
+    }
+
+    private boolean isLogicalOperator(int op) {
+        return op == OpExp.AND || op == OpExp.OR;
+    }
+
+    private boolean isArithmeticOperator(int op) {
+        return op == OpExp.PLUS || op == OpExp.MINUS || op == OpExp.TIMES || op == OpExp.OVER || op == OpExp.DIVIDE;
+    }
+
     public void visit(ReadExp exp) {
-        // Check if the variable is declared before reading
-        Symbol symbol = SymbolTable.lookupSymbol(exp.variable);
-        if (symbol == null) {
-            containsErrors = true;
-            // Error: variable not found
-        }
     }
 
     public void visit(RepeatExp exp) {
         visit(exp.test);
-        visit(exp.body);
+        visit(exp.exps);
     }
 
     public void visit(WriteExp exp) {
         visit(exp.exp);
+    }
+
+    private void reportTypeError(int row, int col) {
+        System.err.printf("Type error at row %d, col %d\n", row, col);
+        containsErrors = true;
     }
 
 }

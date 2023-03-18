@@ -4,47 +4,49 @@ import java.util.HashMap;
 import absyn.Type;
 import symbol.Symbol;
 
-import absyn.*;
-import symbol.*;
-
 public class SymbolTable {
 
     private ArrayList<HashMap<String, Symbol>> symTable;
     private boolean displaySymbols;
 
-    final static int spaces = 4;
+    final static int SPACES = 4;
 
     public SymbolTable(boolean displaySymbols) {
         this.displaySymbols = displaySymbols;
         symTable = new ArrayList<HashMap<String, Symbol>>();
     }
 
-    private void indent( int level ) { //TODO: may be tweaked for toString() purposes
-        for( int i = 0; i < level * SPACES; i++ ) System.out.print( " " );
+    private void indent(int level) { // TODO: may be tweaked for toString() purposes
+        for (int i = 0; i < level * SPACES; i++)
+            System.out.print(" ");
     }
 
     public void createNewScope() {
         symTable.add(new HashMap<String, Symbol>());
     }
 
-    public void addSymbolToScope() {
-        //TODO: add symbols to scope
+    // Adds symbol to the current scope (top of stack)
+    public void addSymbolToScope(Symbol sym) {
+        HashMap<String, Symbol> scope = symTable.get(symTable.size() - 1);
+        scope.put(sym.name, sym);
+        symTable.set(symTable.size() - 1, scope);
     }
 
     public void deleteScope() {
-        //TODO: remove scopes from list
+        // TODO: remove scopes from list
     }
 
-    public void lookupSymbol() {
-        //TODO: build a getter for symbols within scope
+    // Get symbol from scope on top of stack
+    public Symbol lookupSymbol(String name) {
+        return symTable.get(symTable.size() - 1).get(name);
     }
 
     public void lookupFn() {
-        //TODO: build getter for functions within scope
+        // TODO: build getter for functions within scope
     }
 
     public void displayScope(int level) {
-        //TODO: display scopes
+        // TODO: display scopes
     }
 
     // checks if symbols are in the same scope
