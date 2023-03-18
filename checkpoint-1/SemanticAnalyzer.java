@@ -309,7 +309,7 @@ public class SemanticAnalyzer {
     }
 
     private void reportTypeError(int row, int col) {
-        System.err.printf("Type error at row %d, col %d\n", row, col);
+        System.err.println("Type error at row %d, col %d\n", row, col);
         containsErrors = true;
     }
 
