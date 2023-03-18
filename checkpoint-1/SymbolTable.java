@@ -102,12 +102,12 @@ public class SymbolTable {
 
     private void printFunctionSym(FunctionSymbol fn, int level, String key) { // for all function symbols
         indent(level);
-        System.out.println("Function: " + getType(sym.type) + " " + key + " (");
+        System.out.println("Function: " + getType(fn.type) + " " + key + " (");
         // print all params
-        for (Symbol param : sym.params) {
+        for (Symbol param : fn.params) {
             if (param instanceof ArraySymbol) {
                 System.out.print(getType(param.type) + "[]");
-            } else if (param instanceof VarSymbol) {
+            } else if (param instanceof VariableSymbol) {
                 System.out.print(getType(param.type));
             }
             System.out.print(",");
