@@ -10,6 +10,8 @@ import absyn.*;
 
 /* modify error reporting within the parser */
 parser code {:
+
+    public static boolean displaySymbolTable;
     
     /* Change the method report_error so it will display the line and
        column of where the error occurred in the input as well as the
@@ -113,7 +115,16 @@ precedence left ELSE, INT, SEMI, VOID;
 start with program;
 
 program	          ::= declaration_list:s
-                    {: RESULT = s; :}
+                    {: 
+
+                      SemanticAnalyzer analyzer = new SemanticAnalyzer(displaySymbolTable, RESULT); 
+                      if (displaySymbolTable) {
+                        System.out.println("\nSymbol Table:\n");
+                        System.out.println(analyzer.display());
+                      }
+                      
+                      RESULT = s;
+                    :}
                   | ERROR 
                   {: RESULT= null; :}
                   ;

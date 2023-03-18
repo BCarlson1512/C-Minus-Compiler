@@ -24,7 +24,6 @@ import absyn.VarDecList;
 import absyn.VarExp;
 import absyn.WhileExp;
 import absyn.WriteExp;
-import symbol.Symbol;
 
 public class SemanticAnalyzer {
     // TODO: implement symbol table class
@@ -176,26 +175,26 @@ public class SemanticAnalyzer {
 
     public void visit(AssignExp exp) {
         // Visit variable and expression
-        visit(exp.lhs.var);
+        // visit(exp.lhs.var);
         visit(exp.rhs);
 
         // Check if the variable is declared before assignment
-        Symbol varSymbol = symbolTable.lookupSymbol(exp.lhs.var);
-        if (varSymbol == null) {
-            // Report undeclared variable error
-            reportUndeclaredVariableError(exp.row, exp.col, exp.var.name);
-        } else {
-            // Check if the types of the left-hand side and right-hand side expressions are
-            // compatible
-            // Assuming that the 'type' field in the Symbol class represents the type of the
-            // variable
-            if (compatibleTypes(varSymbol.type, exp.exp)) {
-                // The types are compatible, continue with the analysis
-            } else {
-                // Report a type error since the types are not compatible
-                reportTypeError(exp.row, exp.col);
-            }
-        }
+        // Symbol varSymbol = symbolTable.lookupSymbol(exp.lhs.var);
+        // if (varSymbol == null) {
+        // Report undeclared variable error
+        // reportUndeclaredVariableError(exp.row, exp.col, exp.var.name);
+        // } else {
+        // Check if the types of the left-hand side and right-hand side expressions are
+        // compatible
+        // Assuming that the 'type' field in the Symbol class represents the type of the
+        // variable
+        // if (compatibleTypes(varSymbol.type, exp.exp)) {
+        // The types are compatible, continue with the analysis
+        // } else {
+        // Report a type error since the types are not compatible
+        // reportTypeError(exp.row, exp.col);
+        // }
+        // }
     }
 
     private boolean compatibleTypes(int lhsType, Exp rhsExp) {
@@ -305,7 +304,7 @@ public class SemanticAnalyzer {
     }
 
     public void visit(WriteExp exp) {
-        visit(exp.exp);
+        visit(exp);
     }
 
     private void reportTypeError(int row, int col) {

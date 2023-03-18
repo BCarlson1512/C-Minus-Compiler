@@ -7,12 +7,12 @@ import symbol.Symbol;
 public class SymbolTable {
 
     private ArrayList<HashMap<String, Symbol>> symTable;
-    private boolean displaySymbols;
+    private boolean outputSymbolTable;
 
     final static int SPACES = 4;
 
-    public SymbolTable(boolean displaySymbols) {
-        this.displaySymbols = displaySymbols;
+    public SymbolTable(boolean outputSymbolTable) {
+        this.outputSymbolTable = outputSymbolTable;
         symTable = new ArrayList<HashMap<String, Symbol>>();
     }
 
@@ -51,11 +51,16 @@ public class SymbolTable {
 
     // checks if symbols are in the same scope
     public boolean compareScopes(String sym) {
-        return getScope()
+        return false;
     }
 
-    private HashMap<String, Symbol> getScope(int scopeId) {
-        return SymbolTable.get(scopeId);
+    // private HashMap<String, Symbol> getScope(int scopeId) {
+    // return SymbolTable.get(scopeId);
+    // }
+
+    public void display() {
+        // TODO: Display all symbol tables in a nice format
+        System.out.println("PRINT SYMBOL TABLE");
     }
 
     // check if symbols exist, returns scope the symbol exists in, otherwise -1
