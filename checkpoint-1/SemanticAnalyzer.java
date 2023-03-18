@@ -1,28 +1,5 @@
-import absyn.ArrayDec;
-import absyn.AssignExp;
-import absyn.CallExp;
-import absyn.CompoundExp;
-import absyn.Dec;
-import absyn.DecList;
-import absyn.Exp;
-import absyn.ExpList;
-import absyn.FunctionDec;
-import absyn.IfExp;
-import absyn.IndexVar;
-import absyn.IntExp;
-import absyn.NilExp;
-import absyn.OpExp;
-import absyn.ReadExp;
-import absyn.RepeatExp;
-import absyn.ReturnExp;
-import absyn.SimpleDec;
-import absyn.SimpleVar;
-import absyn.Var;
-import absyn.VarDec;
-import absyn.VarDecList;
-import absyn.VarExp;
-import absyn.WhileExp;
-import absyn.WriteExp;
+import absyn.*;
+import symbol.*;
 
 public class SemanticAnalyzer {
     // TODO: implement symbol table class
@@ -307,7 +284,7 @@ public class SemanticAnalyzer {
     }
 
     private void reportTypeError(int row, int col) {
-        System.err.println("Type error at row %d, col %d\n", row, col);
+        System.err.println("Type error at row " + row + ", col " + col);
         containsErrors = true;
     }
 

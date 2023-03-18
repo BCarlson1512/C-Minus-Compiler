@@ -37,7 +37,7 @@ public class SymbolTable {
     public void deleteScope() {
         int currLevel = symTable.size();
         if (currLevel > 0) {
-            if (displaySymbols) {
+            if (outputSymbolTable) {
                 indent(currLevel - 1);
                 System.out.println("Scope level: " + currLevel);
                 displayScope(currLevel);
@@ -52,7 +52,7 @@ public class SymbolTable {
     }
 
     // Get base level functions
-    public void lookupFn(String sym) {
+    public Symbol lookupFn(String sym) {
         // TODO: build getter for functions within scope
         Symbol res = null;
         try {
@@ -66,7 +66,7 @@ public class SymbolTable {
 
     public int countFnParams(String sym) { // counts function parameters
         FunctionSymbol fn = (FunctionSymbol) lookupFn(sym);
-        return function != null ? function.params.size() : 0;
+        return fn != null ? fn.params.size() : 0;
     }
 
     // checks if symbols are in the same scope
