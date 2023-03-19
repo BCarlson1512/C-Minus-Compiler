@@ -8,6 +8,7 @@ public class SymbolTable {
 
     private ArrayList<HashMap<String, Symbol>> symTable;
     private boolean outputSymbolTable;
+    private String displayString = "";
 
     final static int SPACES = 4;
 
@@ -113,6 +114,11 @@ public class SymbolTable {
             System.out.print(",");
         }
         System.out.println(")");
+    }
+
+    private void printVarSymbol(VariableSymbol sym, int level, String key) {
+        indent(level);
+        System.out.println("Var: " + getType(sym.type) + " " + key);
     }
 
     private HashMap<String, Symbol> getScope(int scopeId) {

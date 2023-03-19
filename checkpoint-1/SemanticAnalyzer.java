@@ -13,17 +13,13 @@ public class SemanticAnalyzer {
     private SymbolTable table;
     private int fnReturnType;
 
-    private boolean containsMain;
-    public boolean containsErrors;
+    private boolean containsMain = false;
+    public boolean containsErrors = false;
 
     public String displaySymbolTable() {
         // TODO: change to symbol table tostring method call
         return "";
     }
-
-    // public void visit( ExpList exp){
-    // //TODO: Implement visitor function
-    // }
 
     // public void visit( ArrayDec expList, int level){
     // //TODO: Implement visitor function
@@ -97,7 +93,7 @@ public class SemanticAnalyzer {
         // TODO: Implement visitor function
     }
 
-    public void visit(Var expr, int level) {
+    public void visit(Var expr) {
         // TODO: Implement visitor function
     }
 
@@ -105,38 +101,28 @@ public class SemanticAnalyzer {
         // TODO: Implement visitor function
     }
 
-    public void visit(VarDecList expr, int level) {
+    public void visit(VarDecList expr) {
         // TODO: Implement visitor function
     }
 
-    public void visit(VarExp expr, int level) {
+    public void visit(VarExp expr) {
+        visit(expr.var);
+    }
+
+    public void visit(WhileExp expr) {
+        visit(expr.test);
+        visit(expr.body);
+    }
+
+    public void visit(CompoundExp expr) {
         // TODO: Implement visitor function
     }
 
-    public void visit(WhileExp expr, int level) {
+    public void visit(Type ty) {
         // TODO: Implement visitor function
     }
 
-    public void visit(CompoundExp expr, int level) {
-        // TODO: Implement visitor function
-    }
-
-    public void visit(Type ty, int level) {
-        // TODO: Implement visitor function
-    }
-
-    // Visit each expression in the linked list of expressions until the tail is
-    // reached
-    public void visit(ExpList exp, int level) {
-        while (exp != null) {
-            if (exp.head != null) {
-                visit(exp.head, level);
-                exp = exp.tail;
-            }
-        }
-    }
-
-    public void visit(ArrayDec exp, int level) {
+    public void visit(ArrayDec exp) {
 
         // Arrays cannot be void
         if (exp.type.type == Type.VOID) {
@@ -185,13 +171,11 @@ public class SemanticAnalyzer {
         return false;
     }
 
+    // Visit each expression in the linked list of expressions until the tail is
+    // reached
     public void visit(ExpList exp) {
-        // Iterate through each expression in the list
         while (exp != null) {
-            // Visit the current expression
             visit(exp.head);
-
-            // Move to the next expression in the list
             exp = exp.tail;
         }
     }
