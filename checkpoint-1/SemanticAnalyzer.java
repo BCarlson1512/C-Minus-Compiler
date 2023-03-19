@@ -9,6 +9,7 @@ public class SemanticAnalyzer {
 
     private SymbolTable table;
     private int fnReturnType;
+    private boolean shouldDisplaySymbols = false;
 
     private boolean containsMain = false;
     public boolean containsErrors = false;
@@ -18,38 +19,28 @@ public class SemanticAnalyzer {
         return "";
     }
 
-    // public void visit( ArrayDec expList, int level){
-    // //TODO: Implement visitor function
-    // }
+    /**
+     * This constructor ends up being called by CUP
+     */
+    public SemanticAnalyzer(boolean shouldDisplaySymbols, DecList result) {
+        table = new SymbolTable(shouldDisplaySymbols);
 
-    // public void visit( AssignExp exp){
-    // //TODO: Implement visitor function
-    // }
+        visit(result);
+    }
 
-    // public void visit( IfExp exp){
-    // //TODO: Implement visitor function
-    // }
-
-    // public void visit( OpExp exp){
-    // //TODO: Implement visitor function
-    // }
-
-    // public void visit( ReadExp exp){
-    // //TODO: Implement visitor function
-    // }
-
-    // public void visit( RepeatExp exp){
-    // //TODO: Implement visitor function
-    // }
-
-    // public void visit( WriteExp exp){
-    // //TODO: Implement visitor function
-    // }
+    public void visit(DecList decList) {
+        while (decList != null) {
+            if (decList.head == null) {
+                visit(decList.head);
+            }
+            decList = decList.tail;
+        }
+    }
 
     public void visit(CallExp exp) {
         String fnName = exp.func;
         int row = exp.row + 1;
-        FunctionSymbol fnSym = (FunctionSymbol)table.lookupFn(fnName);
+        FunctionSymbol fnSym = (FunctionSymbol) table.lookupFn(fnName);
         int numFnParams = table.countFnParams(name);
         int numCallParams = exp.count_params();
 
@@ -90,30 +81,30 @@ public class SemanticAnalyzer {
 
     public void visit(Dec declaration) {
         if (declaration instanceof VarDec) {
-            visit((VarDec)declaration);
+            visit((VarDec) declaration);
         } else if (declaration instanceof FunctionDec) {
-            visit((FunctionDec)declaration);
+            visit((FunctionDec) declaration);
         }
     }
 
     public void visit(Exp expr, int level) {
         if (expr instanceof ReturnExp) {
-            visit((ReturnExp)expr);
+            visit((ReturnExp) expr);
         } else if (expr instanceof CompoundExp) {
-            visit((CompoundExp)expr);
+            visit((CompoundExp) expr);
         } else if (expr instanceof WhileExp) {
-            visit((WhileExp)expr);
+            visit((WhileExp) expr);
         } else if (expr instanceof IfExp) {
-            visit((IfExp)expr);
+            visit((IfExp) expr);
         } else if (expr instanceof AssignExp) {
-            visit((AssignExp)expr);
+            visit((AssignExp) expr);
         } else if (expr instanceof OpExp) {
-            visit((OpExp)expr);
+            visit((OpExp) expr);
         } else if (expr instanceof CallExp) {
-            visit((CallExp)expr);
+            visit((CallExp) expr);
         } else if (expr instanceof VarExp) {
-            visit((VarExp)expr);
-        } 
+            visit((VarExp) expr);
+        }
     }
 
     public void visit(FunctionDec dec) {
@@ -122,17 +113,17 @@ public class SemanticAnalyzer {
 
     public void visit(VarDec dec) {
         if (expr instanceof SimpleDec) {
-            visit((SimpleDec)expr);
+            visit((SimpleDec) expr);
         } else if (expr instanceof ArrayDec) {
-            visit((ArrayDec)expr);
+            visit((ArrayDec) expr);
         }
     }
 
     public void visit(Var expr) {
         if (expr instanceof indexVar) {
-            visit((IndexVar)expr);
+            visit((IndexVar) expr);
         } else if (expr instanceof SimpleVar) {
-            visit((SimpleVar)expr);
+            visit((SimpleVar) expr);
         }
     }
 
@@ -146,17 +137,22 @@ public class SemanticAnalyzer {
                 // check for type mismatches
                 if (table.lookupSymbol(varName).type != Type.INT) {
                     updateContainsErrors();
-                    System.err.println("Error: Expected integer instead of " + getType(table.lookupSymbol(varName).type) + "variable '" + varName + "' on line: " + row);
+                    System.err.println("Error: Expected integer instead of " + getType(table.lookupSymbol(varName).type)
+                            + "variable '" + varName + "' on line: " + row);
                 } else if (table.lookupSymbol(name).type != Type.VOID) {
                     updateContainsErrors();
-                    System.err.println("Error: Expected void instead of " + getType(table.lookupSymbol(varName).type) + "variable '" + varName + "' on line: " + row);
+                    System.err.println("Error: Expected void instead of " + getType(table.lookupSymbol(varName).type)
+                            + "variable '" + varName + "' on line: " + row);
                 } else if (table.lookupSymbol(name).type != Type.BOOL) {
                     updateContainsErrors();
-                    System.err.println("Error: Expected boolean instead of " + getType(table.lookupSymbol(varName).type) + "variable '" + varName + "' on line: " + row);
+                    System.err.println("Error: Expected boolean instead of " + getType(table.lookupSymbol(varName).type)
+                            + "variable '" + varName + "' on line: " + row);
                 }
-            } else if (table.lookupSymbol(varName).type != Type.INT || table.lookupSymbol(varName).type != Type.BOOL || table.lookupSymbol(varName).type != Type.VOID){ // array declaration
+            } else if (table.lookupSymbol(varName).type != Type.INT || table.lookupSymbol(varName).type != Type.BOOL
+                    || table.lookupSymbol(varName).type != Type.VOID) { // array declaration
                 updateContainsErrors();
-                System.err.println("Error: Invalid conversion of array '" + varName + "' to static type on line: " + row);
+                System.err
+                        .println("Error: Invalid conversion of array '" + varName + "' to static type on line: " + row);
             }
         } else { // var is not defined
             updateContainsErrors();
@@ -164,11 +160,11 @@ public class SemanticAnalyzer {
         }
     }
 
-    //TODO: may need tweaks
+    // TODO: may need tweaks
     public void visit(IndexVar expr) {
         Symbol sym = table.lookupSymbol(expr.name);
         int row = expr.row + 1;
-        if (sym != null && !(sym instanceof ArraySymbol)) { 
+        if (sym != null && !(sym instanceof ArraySymbol)) {
             updateContainsErrors();
             System.err.println("Error: Symbol '" + expr.name + "' is not an array line: " + row);
         }
@@ -197,7 +193,7 @@ public class SemanticAnalyzer {
     }
 
     public void visit(VarDecList expr) {
-        while(expr != null) {
+        while (expr != null) {
             if (expr.head == null) {
                 visit(expr.head);
             }
@@ -376,7 +372,8 @@ public class SemanticAnalyzer {
         for (int i = 0; i < numFnParams; i++) {
             Exp currParam = params.head;
             Symbol sym = FunctionSymbol.params.get(i);
-            if (symbol instanceof VarSymbol) visit(param);
+            if (symbol instanceof VarSymbol)
+                visit(param);
             params = params.tail;
         }
     }

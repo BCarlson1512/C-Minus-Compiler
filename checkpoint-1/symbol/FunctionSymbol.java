@@ -1,10 +1,12 @@
 package symbol;
+
 import java.util.ArrayList;
+
 /**
-* Function symbol class
-* Stores all symbol params + a list of parameters
-* Stores an address to function
-*/
+ * Function symbol class
+ * Stores all symbol params + a list of parameters
+ * Stores an address to function
+ */
 public class FunctionSymbol extends Symbol {
     public int fun_address;
     public ArrayList<Symbol> params;
@@ -14,13 +16,14 @@ public class FunctionSymbol extends Symbol {
         this.type = type;
         this.name = name;
         this.offset = offset;
-        this.address = address;
+        this.fun_address = address;
     }
+
     public FunctionSymbol(int type, String name, int offset, ArrayList<Symbol> params, int address) {
         this.params = params;
         this.type = type;
         this.name = name;
         this.offset = offset;
-        this.address = address;
+        this.fun_address = address;
     }
 }
