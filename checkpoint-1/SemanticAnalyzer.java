@@ -2,14 +2,11 @@ import absyn.*;
 import symbol.*;
 
 public class SemanticAnalyzer {
-    // TODO: implement symbol table class
     // TODO: Validate Array types (array range is int, index is int)
     // TODO: Validate assignments
     // TODO: Validate operations
-    // TODO: Function call validation
     // TODO: Validate test conditions (must be int)
 
-    // TODO: implement symbol table class before using
     private SymbolTable table;
     private int fnReturnType;
 
@@ -33,10 +30,6 @@ public class SemanticAnalyzer {
     // //TODO: Implement visitor function
     // }
 
-    // public void visit( IntExp exp){
-    // //TODO: Implement visitor function
-    // }
-
     // public void visit( OpExp exp){
     // //TODO: Implement visitor function
     // }
@@ -53,56 +46,163 @@ public class SemanticAnalyzer {
     // //TODO: Implement visitor function
     // }
 
-    public void visit(CallExp exp, int level) {
-        // TODO: Implement visitor function
+    public void visit(CallExp exp) {
+        String fnName = exp.func;
+        int row = exp.row + 1;
+        FunctionSymbol fnSym = (FunctionSymbol)table.lookupFn(fnName);
+        int numFnParams = table.countFnParams(name);
+        int numCallParams = exp.count_params();
+
+        if (table.lookupFn(fnName) == null) { // check existence of function
+            updateContainsErrors();
+            System.err.println("Error: Undefined function '" + fnName + "' on line: " + row);
+        }
+
+        if (numFnParams != numCallParams) { // check for valid number of parameters
+            updateContainsErrors();
+            System.err.println("Error: Invalid number of parameters for function '" + fnName + "' on line: " + row);
+        }
+
+        validateFunctionCall(exp.args, fnSym, numFnParams); // validate individual params
     }
 
     public void visit(DecList decList, int level) {
-        // TODO: Implement visitor function
+        table.newScope();
+
+        // validate input and output functions, kinda hackish to make things work
+        FunctionSymbol inputSym = new FunctionSymbol(Type.INT, "input", new ArrayList<Symbol>())
+        table.addSymbolToScope("input", inputSym);
+
+        // store empty int parameter for vars, kinda hackish
+        ArrayList<Symbol> params = new ArrayList<Symbol>();
+        params.add(new VarSymbol(Type.INT, ""));
+
+        FunctionSymbol outputSym = new FunctionSymbol(Type.VOID, "output", params);
+        table.addSymbolToScope("output", outputSym);
+
+        if (!this.hasMain) { // check for main function
+            updateContainsErrors();
+            System.err.println("Error: Missing Main function");
+        }
+
+        table.deleteScope();
     }
 
-    public void visit(Dec declaration, int level) {
-        // TODO: Implement visitor function
+    public void visit(Dec declaration) {
+        if (declaration instanceof VarDec) {
+            visit((VarDec)declaration);
+        } else if (declaration instanceof FunctionDec) {
+            visit((FunctionDec)declaration);
+        }
     }
 
     public void visit(Exp expr, int level) {
+        if (expr instanceof ReturnExp) {
+            visit((ReturnExp)expr);
+        } else if (expr instanceof CompoundExp) {
+            visit((CompoundExp)expr);
+        } else if (expr instanceof WhileExp) {
+            visit((WhileExp)expr);
+        } else if (expr instanceof IfExp) {
+            visit((IfExp)expr);
+        } else if (expr instanceof AssignExp) {
+            visit((AssignExp)expr);
+        } else if (expr instanceof OpExp) {
+            visit((OpExp)expr);
+        } else if (expr instanceof CallExp) {
+            visit((CallExp)expr);
+        } else if (expr instanceof VarExp) {
+            visit((VarExp)expr);
+        } 
+    }
+
+    public void visit(FunctionDec dec) {
         // TODO: Implement visitor function
     }
 
-    public void visit(FunctionDec expr, int level) {
-        // TODO: Implement visitor function
-    }
-
-    public void visit(NilExp expr, int level) {
-        // TODO: Implement visitor function
-    }
-
-    public void visit(ReturnExp expr, int level) {
-        // TODO: Implement visitor function
-    }
-
-    public void visit(SimpleDec expr, int level) {
-        // TODO: Implement visitor function
-    }
-
-    public void visit(SimpleVar expr, int level) {
-        // TODO: Implement visitor function
-    }
-
-    public void visit(IndexVar expr, int level) {
-        // TODO: Implement visitor function
+    public void visit(VarDec dec) {
+        if (expr instanceof SimpleDec) {
+            visit((SimpleDec)expr);
+        } else if (expr instanceof ArrayDec) {
+            visit((ArrayDec)expr);
+        }
     }
 
     public void visit(Var expr) {
-        // TODO: Implement visitor function
+        if (expr instanceof indexVar) {
+            visit((IndexVar)expr);
+        } else if (expr instanceof SimpleVar) {
+            visit((SimpleVar)expr);
+        }
     }
 
-    public void visit(VarDec expr, int level) {
-        // TODO: Implement visitor function
+    // TODO: This kinda looks scary, maybe sanity check/refactor if needed
+    public void visit(SimpleVar expr) {
+        String varName = expr.name;
+        int row = expr.row + 1;
+
+        if (table.get(varName) != null) {
+            if (table.get(varName) instanceof VarSymbol) { // variable declaration
+                // check for type mismatches
+                if (table.lookupSymbol(varName).type != Type.INT) {
+                    updateContainsErrors();
+                    System.err.println("Error: Expected integer instead of " + getType(table.lookupSymbol(varName).type) + "variable '" + varName + "' on line: " + row);
+                } else if (table.lookupSymbol(name).type != Type.VOID) {
+                    updateContainsErrors();
+                    System.err.println("Error: Expected void instead of " + getType(table.lookupSymbol(varName).type) + "variable '" + varName + "' on line: " + row);
+                } else if (table.lookupSymbol(name).type != Type.BOOL) {
+                    updateContainsErrors();
+                    System.err.println("Error: Expected boolean instead of " + getType(table.lookupSymbol(varName).type) + "variable '" + varName + "' on line: " + row);
+                }
+            } else if (table.lookupSymbol(varName).type != Type.INT || table.lookupSymbol(varName).type != Type.BOOL || table.lookupSymbol(varName).type != Type.VOID){ // array declaration
+                updateContainsErrors();
+                System.err.println("Error: Invalid conversion of array '" + varName + "' to static type on line: " + row);
+            }
+        } else { // var is not defined
+            updateContainsErrors();
+            System.err.println("Error: Undefined variable '" + varName + "' on line: " + row);
+        }
+    }
+
+    //TODO: may need tweaks
+    public void visit(IndexVar expr) {
+        Symbol sym = table.lookupSymbol(expr.name);
+        int row = expr.row + 1;
+        if (sym != null && !(sym instanceof ArraySymbol)) { 
+            updateContainsErrors();
+            System.err.println("Error: Symbol '" + expr.name + "' is not an array line: " + row);
+        }
+        visit(expr.index);
+    }
+
+    public void visit(ReturnExp expr) {
+        // Validate void functions
+        if (fnReturnType == Type.VOID) {
+            if (expr.test != null) {
+                updateContainsErrors();
+                int row = expr.row + 1;
+                System.err.println("Error: Void type function expects no return value, line: " + row);
+                return;
+            }
+        } else {
+            // Check that function has a return value
+            if (expr.test == null) {
+                updateContainsErrors();
+                int row = expr.row + 1;
+                System.err.println("Error: Non-Void type expects return value, line: " + row);
+            } else { // Check the return value matches
+                visit(expr.test);
+            }
+        }
     }
 
     public void visit(VarDecList expr) {
-        // TODO: Implement visitor function
+        while(expr != null) {
+            if (expr.head == null) {
+                visit(expr.head);
+            }
+            expr = expr.tail;
+        }
     }
 
     public void visit(VarExp expr) {
@@ -115,10 +215,6 @@ public class SemanticAnalyzer {
     }
 
     public void visit(CompoundExp expr) {
-        // TODO: Implement visitor function
-    }
-
-    public void visit(Type ty) {
         // TODO: Implement visitor function
     }
 
@@ -138,6 +234,8 @@ public class SemanticAnalyzer {
     public void visit(AssignExp exp) {
         // Visit variable and expression
         // visit(exp.lhs.var);
+        // visit left hand and right hand sides?
+        // visit(exp.lhs); //TODO: uncomment
         visit(exp.rhs);
 
         // Check if the variable is declared before assignment
@@ -211,10 +309,6 @@ public class SemanticAnalyzer {
         }
     }
 
-    public void visit(IntExp exp) {
-        // No semantic analysis required for integer literals
-    }
-
     public void visit(OpExp exp) {
         // Visit left and right operands
         visit(exp.left);
@@ -269,7 +363,36 @@ public class SemanticAnalyzer {
 
     private void reportTypeError(int row, int col) {
         System.err.println("Type error at row " + row + ", col " + col);
-        containsErrors = true;
+        updateContainsErrors();
+    }
+
+    // for tracking errors
+    private void updateContainsErrors() {
+        this.containsErrors = true;
+    }
+
+    // iterate over list of function parameters, validating them one by one
+    private void validateFunctionCall(ExpList params, FunctionSymbol fnSym, int numFnParams) {
+        for (int i = 0; i < numFnParams; i++) {
+            Exp currParam = params.head;
+            Symbol sym = FunctionSymbol.params.get(i);
+            if (symbol instanceof VarSymbol) visit(param);
+            params = params.tail;
+        }
+    }
+
+    // Gets the string version of a type from the Type class
+    private String getType(int type) {
+        switch (type) {
+            case Type.INT:
+                return "INT";
+            case Type.BOOL:
+                return "BOOL";
+            case Type.VOID:
+                return "VOID";
+            default:
+                return "UNKNOWN";
+        }
     }
 
 }
