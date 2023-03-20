@@ -130,15 +130,15 @@ public class SemanticAnalyzer {
                 if (table.lookupSymbol(varName).type != Type.INT) {
                     updateContainsErrors();
                     System.err.println("Error: Expected integer instead of " + getType(table.lookupSymbol(varName).type)
-                            + "variable '" + varName + "' on line: " + row);
+                            + " variable '" + varName + "' on line: " + row);
                 } else if (table.lookupSymbol(varName).type != Type.VOID) {
                     updateContainsErrors();
                     System.err.println("Error: Expected void instead of " + getType(table.lookupSymbol(varName).type)
-                            + "variable '" + varName + "' on line: " + row);
+                            + " variable '" + varName + "' on line: " + row);
                 } else if (table.lookupSymbol(varName).type != Type.BOOL) {
                     updateContainsErrors();
                     System.err.println("Error: Expected boolean instead of " + getType(table.lookupSymbol(varName).type)
-                            + "variable '" + varName + "' on line: " + row);
+                            + " variable '" + varName + "' on line: " + row);
                 }
             } else if (table.lookupSymbol(varName).type != Type.INT || table.lookupSymbol(varName).type != Type.BOOL
                     || table.lookupSymbol(varName).type != Type.VOID) { // array declaration
@@ -186,7 +186,7 @@ public class SemanticAnalyzer {
 
     public void visit(VarDecList expr) {
         while (expr != null) {
-            if (expr.head == null) {
+            if (expr.head != null) {
                 visit(expr.head);
             }
             expr = expr.tail;
@@ -272,7 +272,9 @@ public class SemanticAnalyzer {
     // reached
     public void visit(ExpList exp) {
         while (exp != null) {
-            visit(exp.head);
+            if (exp.head != null) {
+                visit(exp.head);
+            }
             exp = exp.tail;
         }
     }
@@ -393,6 +395,32 @@ public class SemanticAnalyzer {
             default:
                 return "UNKNOWN";
         }
+    }
+
+    // Simple Declaration
+    public void visit(SimpleDec dec) {
+        int type = dec.type.type;
+        String name = dec.name;
+
+        // Mismatched types:
+        // if (type == Type.VOID) {
+        // setHasErrors();
+        // int row = exp.row + 1;
+        // System.err.println("Error: Variable: '" + name + "' was declared as void on
+        // line: " + row);
+        // }
+
+        // // Redeclaration:
+        // if (symbolTable.isSameScope(name)) {
+        // setHasErrors();
+        // int row = exp.row + 1;
+        // System.err.println("Error: Redeclaration of variable '" + name + "' on line:
+        // " + row);
+        // return;
+        // }
+
+        VariableSymbol varSymbol = new VariableSymbol(type, name);
+        table.addSymbolToScope(name, (Symbol) varSymbol);
     }
 
     // in place populate a list of function parameters

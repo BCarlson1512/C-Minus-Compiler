@@ -34,10 +34,11 @@ public class SymbolTable {
 
     // Adds symbol to the current scope (top of stack)
     public void addSymbolToScope(String id, Symbol sym) {
+        // System.err.println(id);
         HashMap<String, Symbol> scope = symTable.get(symTable.size() - 1);
         scope.put(id, sym);
         // may cause issues revisit this
-        symTable.set(symTable.size() - 1, scope);
+        // symTable.set(symTable.size() - 1, scope);
     }
 
     // removes current scope, displays when necessary and deletes from stack
@@ -45,7 +46,7 @@ public class SymbolTable {
         int currLevel = symTable.size();
         if (currLevel > 0) {
             if (outputSymbolTable) {
-                displayString += indent(currLevel -1);
+                displayString += indent(currLevel - 1);
                 displayString += "Scope level: " + currLevel + "\n";
                 displayScope(currLevel - 1);
             }
