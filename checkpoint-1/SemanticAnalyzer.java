@@ -247,18 +247,6 @@ public class SemanticAnalyzer {
 
     }
 
-    private boolean compatibleTypes(int lhsType, Exp rhsExp) {
-        // Assuming that IntExp represents integer expressions
-        if (lhsType == Type.INT && rhsExp instanceof IntExp) {
-            return true;
-        }
-
-        // TODO: Add compatibility checks for other types if necessary
-
-        // The types are not compatible
-        return false;
-    }
-
     // Visit each expression in the linked list of expressions until the tail is
     // reached
     public void visit(ExpList exp) {
