@@ -17,9 +17,15 @@ public class SymbolTable {
         symTable = new ArrayList<HashMap<String, Symbol>>();
     }
 
-    private void indent(int level) { // TODO: may be tweaked for toString() purposes
+    public String toString() {
+        return this.displayString;
+    }
+
+    private String indent(int level) { // TODO: may be tweaked for toString() purposes
+        String res = "";
         for (int i = 0; i < level * SPACES; i++)
-            System.out.print(" ");
+            res += " ";
+        return res;
     }
 
     public void createNewScope() {
@@ -39,8 +45,8 @@ public class SymbolTable {
         int currLevel = symTable.size();
         if (currLevel > 0) {
             if (outputSymbolTable) {
-                indent(currLevel - 1);
-                System.out.println("Scope level: " + currLevel);
+                displayString += indent(currLevel - 1);
+                displayString += "Scope level: " + currLevel
                 displayScope(currLevel);
             }
             symTable.remove(currLevel - 1);
@@ -92,33 +98,33 @@ public class SymbolTable {
     }
 
     private void printArraySym(ArraySymbol sym, int level, String key) { // for all array symbols
-        indent(level);
-        System.out.println("Array: " + getType(sym.type) + " " + key + "[" + sym.array_size + "]");
+        displayString += indent(level);
+        displayString += "Array: " + getType(sym.type) + " " + key + "[" + sym.array_size + "]" + "\n";
     }
 
     private void printVarSym(VariableSymbol sym, int level, String key) { // for all varsymbols
-        indent(level);
-        System.out.println("Var: " + getType(sym.type) + " " + key);
+        displayString += indent(level);
+        displayString += "Var: " + getType(sym.type) + " " + key + "\n";
     }
 
     private void printFunctionSym(FunctionSymbol fn, int level, String key) { // for all function symbols
-        indent(level);
-        System.out.println("Function: " + getType(fn.type) + " " + key + " (");
+        displayString += indent(level);
+        displayString += "Function: " + getType(fn.type) + " " + key + " (\n";
         // print all params
         for (Symbol param : fn.params) {
             if (param instanceof ArraySymbol) {
-                System.out.print(getType(param.type) + "[]");
+                displayString += getType(param.type) + "[]";
             } else if (param instanceof VariableSymbol) {
-                System.out.print(getType(param.type));
+                displayString += getType(param.type);
             }
-            System.out.print(",");
+            displayString += ",";
         }
-        System.out.println(")");
+        displayString += ")\n";
     }
 
     private void printVarSymbol(VariableSymbol sym, int level, String key) {
-        indent(level);
-        System.out.println("Var: " + getType(sym.type) + " " + key);
+        displayString += indent(level);
+        displayString += "Var: " + getType(sym.type) + " " + key+ "\n";
     }
 
     private HashMap<String, Symbol> getScope(int scopeId) {
