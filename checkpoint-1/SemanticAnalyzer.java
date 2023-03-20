@@ -119,32 +119,25 @@ public class SemanticAnalyzer {
         }
     }
 
-    // TODO: This kinda looks scary, maybe sanity check/refactor if needed
     public void visit(SimpleVar expr) {
         String varName = expr.name;
         int row = expr.row + 1;
 
         if (table.lookupSymbol(varName) != null) {
+            boolean isVoidVariable = table.lookupSymbol(varName).type == Type.VOID;
+            String varType = getType(table.lookupSymbol(varName).type);
             if (table.lookupSymbol(varName) instanceof VariableSymbol) { // variable declaration
-                // check for type mismatches
-                if (table.lookupSymbol(varName).type != Type.INT) {
+                // checking for invalid type (VOID)
+                if (isVoidVariable) {
                     updateContainsErrors();
-                    System.err.println("Error: Expected integer instead of " + getType(table.lookupSymbol(varName).type)
-                            + " variable '" + varName + "' on line: " + row);
-                } else if (table.lookupSymbol(varName).type != Type.VOID) {
-                    updateContainsErrors();
-                    System.err.println("Error: Expected void instead of " + getType(table.lookupSymbol(varName).type)
-                            + " variable '" + varName + "' on line: " + row);
-                } else if (table.lookupSymbol(varName).type != Type.BOOL) {
-                    updateContainsErrors();
-                    System.err.println("Error: Expected boolean instead of " + getType(table.lookupSymbol(varName).type)
-                            + " variable '" + varName + "' on line: " + row);
+                    System.err.println("Error: Expected"+ varType+ "instead of " + varType+ " variable '" + varName + "' on line: " + row);
                 }
-            } else if (table.lookupSymbol(varName).type != Type.INT || table.lookupSymbol(varName).type != Type.BOOL
-                    || table.lookupSymbol(varName).type != Type.VOID) { // array declaration
+            } else if (isVoidVariable) { // array declaration
                 updateContainsErrors();
-                System.err
-                        .println("Error: Invalid conversion of array '" + varName + "' to static type on line: " + row);
+                System.err.println("Error: Invalid type "+varType +" array '" + varName + "' on line: " + row);
+            } else { // invalid array conversion
+                updateContainsErrors();
+                System.err.println("Error: cannot convert array '" + varName + "to int/bool on line: " + row);
             }
         } else { // var is not defined
             updateContainsErrors();
