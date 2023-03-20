@@ -55,7 +55,7 @@ class Main {
       Lexer scanner = new Lexer(new FileReader(fileName));
       parser p = new parser(new Lexer(new FileReader(fileName)));
 
-      p.outputSymbolTable = outputSymbolTable;
+      p.outputSymbolTable = outputSymbolTable; //TODO: i dont think this works...
       Absyn result = (Absyn) (p.parse().value);
       if (SHOW_TREE && result != null) {
         System.out.println("The abstract syntax tree is:");
