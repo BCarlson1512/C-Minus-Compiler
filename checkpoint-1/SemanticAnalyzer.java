@@ -204,11 +204,11 @@ public class SemanticAnalyzer {
     }
 
     public void visit(CompoundExp expr, FunctionSymbol sym) {
-        // TODO: Implement visitor function
         boolean isNonVoid = sym.type != Type.VOID;
         visit(expr.decList);
         visit(expr.expList);
         table.deleteScope();
+        //TODO: end of function checking?
     }
 
     public void visit(ArrayDec exp) {
@@ -228,7 +228,7 @@ public class SemanticAnalyzer {
         // Visit variable and expression
         // visit(exp.lhs.var);
         // visit left hand and right hand sides?
-        // visit(exp.lhs); //TODO: uncomment
+        visit(exp.lhs);
         visit(exp.rhs);
 
         // Check if the variable is declared before assignment
