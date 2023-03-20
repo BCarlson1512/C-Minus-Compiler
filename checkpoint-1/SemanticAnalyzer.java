@@ -20,6 +20,10 @@ public class SemanticAnalyzer {
         return "";
     }
 
+    public String toString(){
+        return "TOSTRING";
+    }
+
     /**
      * This constructor ends up being called by CUP
      */

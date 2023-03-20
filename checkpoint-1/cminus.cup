@@ -11,7 +11,7 @@ import absyn.*;
 /* modify error reporting within the parser */
 parser code {:
 
-    public static boolean displaySymbolTable;
+    public static boolean outputSymbolTable;
     
     /* Change the method report_error so it will display the line and
        column of where the error occurred in the input as well as the
@@ -117,10 +117,10 @@ start with program;
 program	          ::= declaration_list:s
                     {: 
 
-                      SemanticAnalyzer analyzer = new SemanticAnalyzer(displaySymbolTable, RESULT); 
-                      if (displaySymbolTable) {
+                      SemanticAnalyzer analyzer = new SemanticAnalyzer(outputSymbolTable, RESULT); 
+                      if (outputSymbolTable) {
                         System.out.println("\nSymbol Table:\n");
-                        System.out.println(analyzer.display());
+                        System.out.println(analyzer.toString());
                       }
                       
                       RESULT = s;
