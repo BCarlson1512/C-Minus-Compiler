@@ -34,7 +34,6 @@ public class SymbolTable {
 
     // Adds symbol to the current scope (top of stack)
     public void addSymbolToScope(String id, Symbol sym) {
-        // System.err.println(id);
         HashMap<String, Symbol> scope = symTable.get(symTable.size() - 1);
         scope.put(id, sym);
         // may cause issues revisit this
@@ -57,7 +56,12 @@ public class SymbolTable {
 
     // Get symbol from scope on top of stack
     public Symbol lookupSymbol(String name) {
-        return symTable.get(symTable.size() - 1).get(name);
+        for (HashMap<String, Symbol> scope : symTable) {
+            if (scope.containsKey(name)) {
+                return scope.get(name);
+            }
+        }
+        return null;
     }
 
     // Get base level functions
