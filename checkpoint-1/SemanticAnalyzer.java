@@ -39,6 +39,8 @@ public class SemanticAnalyzer {
             System.err.println("Error: Undefined function '" + fnName + "' on line: " + row);
         }
 
+        System.err.println("fnParams: " + numFnParams + " CallParams: " + numCallParams);
+
         if (numFnParams != numCallParams) { // check for valid number of parameters
             updateContainsErrors();
             System.err.println("Error: Invalid number of parameters for function '" + fnName + "' on line: " + row);
@@ -136,10 +138,12 @@ public class SemanticAnalyzer {
             } else if (isVoidVariable) { // array declaration
                 updateContainsErrors();
                 System.err.println("Error: Invalid type " + varType + " array '" + varName + "' on line: " + row);
-            } else { // invalid array conversion
-                updateContainsErrors();
-                System.err.println("Error: cannot convert array '" + varName + "to int/bool on line: " + row);
-            }
+            } 
+            //TODO: figure out invalid array conversions
+            //else { // invalid array conversion
+            //    updateContainsErrors();
+            //    System.err.println("Error: cannot convert array '" + varName + "to int/bool on line: " + row);
+            //}
         } else { // var is not defined
             updateContainsErrors();
             System.err.println("Error: Undefined variable '" + varName + "' on line: " + row);
@@ -228,8 +232,10 @@ public class SemanticAnalyzer {
         if (table.compareScopes(exp.name)) {
             System.err.println("Error: Line" + exp.row + 1 + "Variable '" + exp.name + "'  already declared");
         }
-
-        table.addSymbolToScope(exp.name, new VariableSymbol(exp.type.type, exp.name));
+        boolean nullArraySize = exp.size == null;
+        int arrSize = (nullArraySize) ? 0 : exp.size.value;
+        ArraySymbol arrSym = new ArraySymbol(exp.type.type, exp.name, arrSize);
+        table.addSymbolToScope(exp.name, (Symbol)arrSym);
     }
 
     public void visit(AssignExp exp) {
@@ -370,7 +376,7 @@ public class SemanticAnalyzer {
         // " + row);
         // return;
         // }
-
+        System.err.println("Variable " + name + " Type " + type);
         VariableSymbol varSymbol = new VariableSymbol(type, name);
         table.addSymbolToScope(name, (Symbol) varSymbol);
     }
