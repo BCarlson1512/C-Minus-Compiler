@@ -10,17 +10,11 @@ public class SemanticAnalyzer {
 
     private SymbolTable table;
     private int fnReturnType;
-    private boolean shouldDisplaySymbols = false;
 
     private boolean containsMain = false;
     public boolean containsErrors = false;
 
-    public String displaySymbolTable() {
-        // TODO: change to symbol table tostring method call
-        return "";
-    }
-
-    public String toString(){
+    public String toString() {
         return "TOSTRING";
     }
 
@@ -84,20 +78,21 @@ public class SemanticAnalyzer {
     }
 
     public void visit(FunctionDec dec) {
-        ArrayList <Symbol> fnParams = populateFunctionParams(dec.params_list);
+        ArrayList<Symbol> fnParams = populateFunctionParams(dec.params_list);
         int type = dec.ret_type.type;
         String name = dec.func;
         FunctionSymbol fnSym = new FunctionSymbol(type, name, dec.row, fnParams, -1);
 
-        table.addSymbolToScope(name, (Symbol)fnSym);
+        table.addSymbolToScope(name, (Symbol) fnSym);
         table.createNewScope();
 
         fnReturnType = dec.ret_type.type;
 
-        if (dec.func.equals("main")) containsMain = true;
+        if (dec.func.equals("main"))
+            containsMain = true;
 
         visit(dec.params_list);
-        visit((CompoundExp)dec.body, fnSym);
+        visit((CompoundExp) dec.body, fnSym);
     }
 
     public void visit(VarDec dec) {
@@ -211,7 +206,7 @@ public class SemanticAnalyzer {
         visit(expr.decs);
         visit(expr.exps);
         table.deleteScope();
-        //TODO: end of function checking?
+        // TODO: end of function checking?
     }
 
     public void visit(ArrayDec exp) {

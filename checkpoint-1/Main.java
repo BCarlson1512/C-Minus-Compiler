@@ -33,12 +33,14 @@ class Main {
       for (Integer i = 0; i < argv.length; i++) {
         if (argv[i].equals("-s")) { // -s and can happen continuously
           outputSymbolTable = true;
-        }
-        if (argv[i].equals("-a")) {
+        } else if (argv[i].equals("-a")) {
           outputAbsyn = true;
-          fileName = argv[i + 1];
+        } else if (argv[i].equals("-sa") || argv[i].equals("-as")) {
+          outputSymbolTable = true;
+          outputAbsyn = true;
+        } else {
+          fileName = argv[i];
         }
-
       }
 
       if (outputAbsyn) {

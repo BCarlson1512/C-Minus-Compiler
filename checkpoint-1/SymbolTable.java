@@ -43,6 +43,7 @@ public class SymbolTable {
     // removes current scope, displays when necessary and deletes from stack
     public void deleteScope() {
         int currLevel = symTable.size();
+
         if (currLevel > 0) {
             if (outputSymbolTable) {
                 displayString += indent(currLevel - 1);
@@ -84,7 +85,8 @@ public class SymbolTable {
 
     // TODO: test
     public void displayScope(int level) {
-        int numScopes = symTable.size();
+
+        // int numScopes = symTable.size();
         for (String s : getScope(level).keySet()) {
             Symbol sym = getScope(level).get(s);
             if (sym instanceof FunctionSymbol) {
@@ -124,7 +126,7 @@ public class SymbolTable {
 
     private void printVarSymbol(VariableSymbol sym, int level, String key) {
         displayString += indent(level);
-        displayString += "Var: " + getType(sym.type) + " " + key+ "\n";
+        displayString += "Var: " + getType(sym.type) + " " + key + "\n";
     }
 
     private HashMap<String, Symbol> getScope(int scopeId) {
