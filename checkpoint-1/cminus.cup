@@ -116,14 +116,12 @@ start with program;
 
 program	          ::= declaration_list:s
                     {: 
-
+                      RESULT = s;
                       SemanticAnalyzer analyzer = new SemanticAnalyzer(outputSymbolTable, RESULT); 
                       if (outputSymbolTable) {
                         System.out.println("\nSymbol Table:\n");
                         System.out.println(analyzer.toString());
                       }
-                      
-                      RESULT = s;
                     :}
                   | ERROR 
                   {: RESULT= null; :}

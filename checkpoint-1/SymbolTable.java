@@ -43,10 +43,9 @@ public class SymbolTable {
     // removes current scope, displays when necessary and deletes from stack
     public void deleteScope() {
         int currLevel = symTable.size();
-
         if (currLevel > 0) {
             if (outputSymbolTable) {
-                displayString += indent(currLevel - 1);
+                displayString += indent(currLevel -1);
                 displayString += "Scope level: " + currLevel + "\n";
                 displayScope(currLevel - 1);
             }
