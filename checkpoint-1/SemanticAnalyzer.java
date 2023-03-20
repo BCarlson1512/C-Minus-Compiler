@@ -15,7 +15,7 @@ public class SemanticAnalyzer {
     public boolean containsErrors = false;
 
     public String toString() {
-        return "TOSTRING";
+        return table.toString();
     }
 
     /**
@@ -88,8 +88,9 @@ public class SemanticAnalyzer {
 
         fnReturnType = dec.ret_type.type;
 
-        if (dec.func.equals("main"))
+        if (dec.func.equals("main")) {
             containsMain = true;
+        }
 
         visit(dec.params_list);
         visit((CompoundExp) dec.body, fnSym);

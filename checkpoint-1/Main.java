@@ -38,27 +38,32 @@ class Main {
         } else if (argv[i].equals("-sa") || argv[i].equals("-as")) {
           outputSymbolTable = true;
           outputAbsyn = true;
-        } else {
+        } else if (argv[i].endsWith(".cm")) {
           fileName = argv[i];
         }
       }
 
-      if (outputAbsyn) {
-        String[] pathSegments = fileName.split("/");
-        String lastSegment = pathSegments[pathSegments.length - 1];
+      String[] pathSegments = fileName.split("/");
+      String lastSegment = pathSegments[pathSegments.length - 1];
 
-        // The output file name is the same as the input file name, but with a different
-        // file extension.
-        String strippedLastSegment = lastSegment.substring(0, lastSegment.length() - 3);
-
-        System.setOut(new PrintStream(new FileOutputStream(strippedLastSegment + ".abs")));
-      }
+      // The output file name is the same as the input file name, but with a different
+      // file extension.
+      String outputBaseFileName = lastSegment.substring(0, lastSegment.length() - 3);
 
       Lexer scanner = new Lexer(new FileReader(fileName));
       parser p = new parser(new Lexer(new FileReader(fileName)));
 
       p.outputSymbolTable = outputSymbolTable;
+      if (outputAbsyn) {
+        System.setOut(new PrintStream(new FileOutputStream(outputBaseFileName + ".sym")));
+      }
+
       Absyn result = (Absyn) (p.parse().value);
+
+      if (outputAbsyn) {
+        System.setOut(new PrintStream(new FileOutputStream(outputBaseFileName + ".abs")));
+      }
+
       if (SHOW_TREE && result != null) {
         System.out.println("The abstract syntax tree is:");
         ShowTreeVisitor visitor = new ShowTreeVisitor();
