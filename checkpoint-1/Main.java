@@ -31,9 +31,10 @@ class Main {
 
       // Set booleans based on command line arguments.
       for (Integer i = 0; i < argv.length; i++) {
-        if (argv[i].equals("-s")) {
+        if (argv[i].equals("-s")) { // -s and can happen continuously
           outputSymbolTable = true;
-        } else if (argv[i].equals("-a")) {
+        }
+        if (argv[i].equals("-a")) {
           outputAbsyn = true;
           fileName = argv[i + 1];
         }

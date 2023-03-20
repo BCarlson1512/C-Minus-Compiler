@@ -47,8 +47,11 @@ Limitations:
 ### Ben
 
 - Create package symbol, containing related symbol table classes
-- Create SymbolTable.java the data structure driving our compiler
+- Create SymbolTable.java the data structure driving our semantic analyzer component
+- Create visitor functions within semantic analyzer
+- Write docs + reporting
 
 ## Acknowledgements
 
 This project was heavily based on/inspired by resources provided by Dr. Fei Song's compilers content. We were provided a rough idea of the implementation process as well as a portion of starter code. The grammars created in CUP are heavily based off the the C- specs. The absyn class structure is heavily based off of lecture content.
+Semantic analyzer is heavily based on lecture content + assignment specs
