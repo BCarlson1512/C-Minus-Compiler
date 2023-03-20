@@ -45,8 +45,8 @@ public class SymbolTable {
         int currLevel = symTable.size();
         if (currLevel > 0) {
             if (outputSymbolTable) {
-                displayString += indent(currLevel - 1);
-                displayString += "Scope level: " + currLevel + "\n";
+                displayString = indent(currLevel) + displayString;
+                displayString = "Scope level: " + currLevel + "\n" + displayString;
                 displayScope(currLevel - 1);
             }
 
@@ -66,7 +66,6 @@ public class SymbolTable {
 
     // Get base level functions
     public Symbol lookupFn(String sym) {
-        // TODO: build getter for functions within scope
         Symbol res = null;
         try {
             res = symTable.get(0).get(sym);
@@ -88,12 +87,11 @@ public class SymbolTable {
         return getScope(tableSize).containsKey(sym);
     }
 
-    // TODO: test
     public void displayScope(int level) {
 
-        // int numScopes = symTable.size();
-        for (String s : getScope(level).keySet()) {
-            Symbol sym = getScope(level).get(s);
+        int numScopes = symTable.size();
+        for (String s : getScope(numScopes - 1).keySet()) {
+            Symbol sym = getScope(numScopes - 1).get(s);
             if (sym instanceof FunctionSymbol) {
                 printFunctionSym((FunctionSymbol) sym, level, s);
             } else if (sym instanceof ArraySymbol) {
@@ -105,33 +103,34 @@ public class SymbolTable {
     }
 
     private void printArraySym(ArraySymbol sym, int level, String key) { // for all array symbols
-        displayString += indent(level);
-        displayString += "Array: " + getType(sym.type) + " " + key + "[" + sym.array_size + "]" + "\n";
+        displayString = indent(level) + displayString;
+        displayString = "Array: " + getType(sym.type) + " " + key + "[" + sym.array_size + "]" + "\n" + displayString;
     }
 
     private void printVarSym(VariableSymbol sym, int level, String key) { // for all varsymbols
-        displayString += indent(level);
-        displayString += "Var: " + getType(sym.type) + " " + key + "\n";
+        displayString = indent(level) + displayString;
+        displayString = "Var: " + getType(sym.type) + " " + key + "\n" + displayString;
     }
 
     private void printFunctionSym(FunctionSymbol fn, int level, String key) { // for all function symbols
-        displayString += indent(level);
-        displayString += "Function: " + getType(fn.type) + " " + key + " (\n";
+        String functionString = "";
+        functionString += indent(level);
+        functionString += "Function: " + getType(fn.type) + " " + key + " (\n";
         // print all params
         for (Symbol param : fn.params) {
             if (param instanceof ArraySymbol) {
-                displayString += getType(param.type) + "[]";
             } else if (param instanceof VariableSymbol) {
-                displayString += getType(param.type);
+                functionString += getType(param.type);
             }
-            displayString += ",";
+            functionString += ",";
         }
-        displayString += ")\n";
+        functionString += ")\n";
+        displayString = functionString + displayString;
     }
 
     private void printVarSymbol(VariableSymbol sym, int level, String key) {
-        displayString += indent(level);
-        displayString += "Var: " + getType(sym.type) + " " + key + "\n";
+        displayString = indent(level) + displayString;
+        displayString = "Var: " + getType(sym.type) + " " + key + "\n" + displayString;
     }
 
     private HashMap<String, Symbol> getScope(int scopeId) {
