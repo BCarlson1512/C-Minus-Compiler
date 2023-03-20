@@ -46,7 +46,7 @@ public class SymbolTable {
         if (currLevel > 0) {
             if (outputSymbolTable) {
                 displayString += indent(currLevel - 1);
-                displayString += "Scope level: " + currLevel
+                displayString += "Scope level: " + currLevel;
                 displayScope(currLevel);
             }
             symTable.remove(currLevel - 1);

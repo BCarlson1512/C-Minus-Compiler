@@ -1,5 +1,6 @@
 import absyn.*;
 import symbol.*;
+import java.util.ArrayList;
 
 public class SemanticAnalyzer {
     // TODO: Validate Array types (array range is int, index is int)
@@ -32,7 +33,7 @@ public class SemanticAnalyzer {
         String fnName = exp.func;
         int row = exp.row + 1;
         FunctionSymbol fnSym = (FunctionSymbol) table.lookupFn(fnName);
-        int numFnParams = table.countFnParams(name);
+        int numFnParams = table.countFnParams(fnName);
         int numCallParams = exp.count_params();
 
         if (table.lookupFn(fnName) == null) { // check existence of function
@@ -48,21 +49,21 @@ public class SemanticAnalyzer {
         validateFunctionCall(exp.args, fnSym, numFnParams); // validate individual params
     }
 
-    public void visit(DecList decList, int level) {
-        table.newScope();
+    public void visit(DecList decList) {
+        table.createNewScope();
 
         // validate input and output functions, kinda hackish to make things work
-        FunctionSymbol inputSym = new FunctionSymbol(Type.INT, "input", new ArrayList<Symbol>())
+        FunctionSymbol inputSym = new FunctionSymbol(Type.INT, "input", 0, new ArrayList<Symbol>(), -1);
         table.addSymbolToScope("input", inputSym);
 
         // store empty int parameter for vars, kinda hackish
         ArrayList<Symbol> params = new ArrayList<Symbol>();
-        params.add(new VarSymbol(Type.INT, ""));
+        params.add(new VariableSymbol(Type.INT, ""));
 
-        FunctionSymbol outputSym = new FunctionSymbol(Type.VOID, "output", params);
+        FunctionSymbol outputSym = new FunctionSymbol(Type.VOID, "output", 0, params, -1);
         table.addSymbolToScope("output", outputSym);
 
-        if (!this.hasMain) { // check for main function
+        if (!this.containsMain) { // check for main function
             updateContainsErrors();
             System.err.println("Error: Missing Main function");
         }
@@ -79,34 +80,32 @@ public class SemanticAnalyzer {
     }
 
     public void visit(FunctionDec dec) {
-        ArrayList <Symbol> fnParams = new ArrayList<Symbol>();
-        populateFunctionParams(dec.param_list, fnParams);
-        
-        int type = dec.type.type;
+        ArrayList <Symbol> fnParams = populateFunctionParams(dec.params_list);
+        int type = dec.ret_type.type;
         String name = dec.func;
-        FunctionSymbol fnSym = new FunctionSymbol(type, name, fnParams);
+        FunctionSymbol fnSym = new FunctionSymbol(type, name, dec.row, fnParams, -1);
 
         table.addSymbolToScope(name, (Symbol)fnSym);
         table.createNewScope();
 
-        fnReturnType = expr.type.type;
+        fnReturnType = dec.ret_type.type;
 
-        if (expr.func.equals("main")) hasMain = true;
+        if (dec.func.equals("main")) containsMain = true;
 
-        visit(dec.param_list);
-        visit((CompoundExp)dec.test, fnSym);
+        visit(dec.params_list);
+        visit((CompoundExp)dec.body, fnSym);
     }
 
     public void visit(VarDec dec) {
-        if (expr instanceof SimpleDec) {
-            visit((SimpleDec) expr);
-        } else if (expr instanceof ArrayDec) {
-            visit((ArrayDec) expr);
+        if (dec instanceof SimpleDec) {
+            visit((SimpleDec) dec);
+        } else if (dec instanceof ArrayDec) {
+            visit((ArrayDec) dec);
         }
     }
 
     public void visit(Var expr) {
-        if (expr instanceof indexVar) {
+        if (expr instanceof IndexVar) {
             visit((IndexVar) expr);
         } else if (expr instanceof SimpleVar) {
             visit((SimpleVar) expr);
@@ -118,18 +117,18 @@ public class SemanticAnalyzer {
         String varName = expr.name;
         int row = expr.row + 1;
 
-        if (table.get(varName) != null) {
-            if (table.get(varName) instanceof VarSymbol) { // variable declaration
+        if (table.lookupSymbol(varName) != null) {
+            if (table.lookupSymbol(varName) instanceof VariableSymbol) { // variable declaration
                 // check for type mismatches
                 if (table.lookupSymbol(varName).type != Type.INT) {
                     updateContainsErrors();
                     System.err.println("Error: Expected integer instead of " + getType(table.lookupSymbol(varName).type)
                             + "variable '" + varName + "' on line: " + row);
-                } else if (table.lookupSymbol(name).type != Type.VOID) {
+                } else if (table.lookupSymbol(varName).type != Type.VOID) {
                     updateContainsErrors();
                     System.err.println("Error: Expected void instead of " + getType(table.lookupSymbol(varName).type)
                             + "variable '" + varName + "' on line: " + row);
-                } else if (table.lookupSymbol(name).type != Type.BOOL) {
+                } else if (table.lookupSymbol(varName).type != Type.BOOL) {
                     updateContainsErrors();
                     System.err.println("Error: Expected boolean instead of " + getType(table.lookupSymbol(varName).type)
                             + "variable '" + varName + "' on line: " + row);
@@ -160,7 +159,7 @@ public class SemanticAnalyzer {
     public void visit(ReturnExp expr) {
         // Validate void functions
         if (fnReturnType == Type.VOID) {
-            if (expr.test != null) {
+            if (expr.exp != null) {
                 updateContainsErrors();
                 int row = expr.row + 1;
                 System.err.println("Error: Void type function expects no return value, line: " + row);
@@ -168,12 +167,12 @@ public class SemanticAnalyzer {
             }
         } else {
             // Check that function has a return value
-            if (expr.test == null) {
+            if (expr.exp == null) {
                 updateContainsErrors();
                 int row = expr.row + 1;
                 System.err.println("Error: Non-Void type expects return value, line: " + row);
             } else { // Check the return value matches
-                visit(expr.test);
+                visit(expr.exp);
             }
         }
     }
@@ -198,15 +197,15 @@ public class SemanticAnalyzer {
 
     public void visit(CompoundExp expr) {
         table.createNewScope();
-        visit(expr.decList);
-        visit(expr.expList);
+        visit(expr.decs);
+        visit(expr.exps);
         table.deleteScope();
     }
 
     public void visit(CompoundExp expr, FunctionSymbol sym) {
         boolean isNonVoid = sym.type != Type.VOID;
-        visit(expr.decList);
-        visit(expr.expList);
+        visit(expr.decs);
+        visit(expr.exps);
         table.deleteScope();
         //TODO: end of function checking?
     }
@@ -232,8 +231,8 @@ public class SemanticAnalyzer {
         visit(exp.rhs);
 
         // Check if the variable is declared before assignment
-        // Symbol varSymbol = symbolTable.lookupSymbol(exp.lhs.var);
-        // if (varSymbol == null) {
+        // Symbol VariableSymbol = symbolTable.lookupSymbol(exp.lhs.var);
+        // if (VariableSymbol == null) {
         // Report undeclared variable error
         // reportUndeclaredVariableError(exp.row, exp.col, exp.var.name);
         // } else {
@@ -241,7 +240,7 @@ public class SemanticAnalyzer {
         // compatible
         // Assuming that the 'type' field in the Symbol class represents the type of the
         // variable
-        // if (compatibleTypes(varSymbol.type, exp.exp)) {
+        // if (compatibleTypes(VariableSymbol.type, exp.exp)) {
         // The types are compatible, continue with the analysis
         // } else {
         // Report a type error since the types are not compatible
@@ -368,9 +367,9 @@ public class SemanticAnalyzer {
     private void validateFunctionCall(ExpList params, FunctionSymbol fnSym, int numFnParams) {
         for (int i = 0; i < numFnParams; i++) {
             Exp currParam = params.head;
-            Symbol sym = FunctionSymbol.params.get(i);
-            if (symbol instanceof VarSymbol)
-                visit(param);
+            Symbol sym = fnSym.params.get(i);
+            if (sym instanceof VariableSymbol)
+                visit(currParam);
             params = params.tail;
         }
     }
@@ -390,12 +389,13 @@ public class SemanticAnalyzer {
     }
 
     // in place populate a list of function parameters
-    private void populateFunctionParams(VarDecList param_list, ArrayList<Symbol> paramList) {
+    private ArrayList<Symbol> populateFunctionParams(VarDecList param_list) {
+        ArrayList<Symbol> paramList = new ArrayList<>();
         while (param_list != null) {
             int varType = param_list.head.type.type;
-            String varName = paramList.head.name;
+            String varName = param_list.head.name;
             if (param_list.head instanceof SimpleDec) {
-                VarSymbol param = new VarSymbol(varType, varName, -1);
+                VariableSymbol param = new VariableSymbol(varName, varType, -1);
                 paramList.add(param);
             } else if (param_list.head instanceof ArrayDec) {
                 ArraySymbol param = new ArraySymbol(varType, varName, -1);
@@ -403,6 +403,7 @@ public class SemanticAnalyzer {
             }
             param_list = param_list.tail;
         }
+        return paramList;
     }
 
 }
