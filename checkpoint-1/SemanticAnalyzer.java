@@ -79,9 +79,22 @@ public class SemanticAnalyzer {
     }
 
     public void visit(FunctionDec dec) {
-        // TODO: Implement visitor function
+        ArrayList <Symbol> fnParams = new ArrayList<Symbol>();
+        populateFunctionParams(dec.param_list, fnParams);
+        
+        int type = dec.type.type;
+        String name = dec.func;
+        FunctionSymbol fnSym = new FunctionSymbol(type, name, fnParams);
+
+        table.addSymbolToScope(name, (Symbol)fnSym);
+        table.createNewScope();
+
         fnReturnType = expr.type.type;
+
         if (expr.func.equals("main")) hasMain = true;
+
+        visit(dec.param_list);
+        visit((CompoundExp)dec.test, fnSym);
     }
 
     public void visit(VarDec dec) {
@@ -373,6 +386,22 @@ public class SemanticAnalyzer {
                 return "VOID";
             default:
                 return "UNKNOWN";
+        }
+    }
+
+    // in place populate a list of function parameters
+    private void populateFunctionParams(VarDecList param_list, ArrayList<Symbol> paramList) {
+        while (param_list != null) {
+            int varType = param_list.head.type.type;
+            String varName = paramList.head.name;
+            if (param_list.head instanceof SimpleDec) {
+                VarSymbol param = new VarSymbol(varType, varName, -1);
+                paramList.add(param);
+            } else if (param_list.head instanceof ArrayDec) {
+                ArraySymbol param = new ArraySymbol(varType, varName, -1);
+                paramList.add(param);
+            }
+            param_list = param_list.tail;
         }
     }
 
