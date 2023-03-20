@@ -61,6 +61,13 @@ public class SemanticAnalyzer {
         FunctionSymbol outputSym = new FunctionSymbol(Type.VOID, "output", 0, params, -1);
         table.addSymbolToScope("output", outputSym);
 
+        while (decList != null) {
+            if (decList.head != null) {
+                visit(decList.head);
+            }
+            decList = decList.tail;
+        }
+
         if (!this.containsMain) { // check for main function
             updateContainsErrors();
             System.err.println("Error: Missing Main function");
