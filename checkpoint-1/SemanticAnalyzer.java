@@ -130,11 +130,12 @@ public class SemanticAnalyzer {
                 // checking for invalid type (VOID)
                 if (isVoidVariable) {
                     updateContainsErrors();
-                    System.err.println("Error: Expected"+ varType+ "instead of " + varType+ " variable '" + varName + "' on line: " + row);
+                    System.err.println("Error: Expected" + varType + "instead of " + varType + " variable '" + varName
+                            + "' on line: " + row);
                 }
             } else if (isVoidVariable) { // array declaration
                 updateContainsErrors();
-                System.err.println("Error: Invalid type "+varType +" array '" + varName + "' on line: " + row);
+                System.err.println("Error: Invalid type " + varType + " array '" + varName + "' on line: " + row);
             } else { // invalid array conversion
                 updateContainsErrors();
                 System.err.println("Error: cannot convert array '" + varName + "to int/bool on line: " + row);
@@ -286,27 +287,6 @@ public class SemanticAnalyzer {
         // Visit left and right operands
         visit(exp.left);
         visit(exp.right);
-
-        // Check if the operator is a relational, logical, or arithmetic operator
-        if (isRelationalOperator(exp.op) || isLogicalOperator(exp.op)) {
-            // Handle boolean expression
-            if (!(exp.left instanceof IntExp) || !(exp.right instanceof IntExp)) {
-                // Report a type error since both operands should be integers for relational and
-                // logical operators
-                reportTypeError(exp.row, exp.col);
-            } else {
-            }
-        } else if (isArithmeticOperator(exp.op)) {
-            // Handle arithmetic operators
-            if (!(exp.left instanceof IntExp) || (exp.right instanceof IntExp)) {
-                // Report a type error since both operands should be integers for arithmetic
-                // operators
-                reportTypeError(exp.row, exp.col);
-            }
-        } else {
-            // Handle other types of operators (unary operators, etc.)
-            // Check if the types are correct for the specific operator
-        }
     }
 
     private boolean isRelationalOperator(int op) {
