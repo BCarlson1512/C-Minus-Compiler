@@ -229,10 +229,10 @@ public class SemanticAnalyzer {
             System.err.println("[Line " + exp.row + "] Error: Variable " + exp.name + " already declared");
         }
 
-        //TODO: Validate types
-        //TODO: Redeclaration
+        // TODO: Validate types
+        // TODO: Redeclaration
         if (table.compareScopes(exp.name)) {
-            System.err.println("Error: Line"+exp.row + 1 +"Variable '" +exp.name+ "'  already declared");
+            System.err.println("Error: Line" + exp.row + 1 + "Variable '" + exp.name + "'  already declared");
         }
 
         table.addSymbolToScope(exp.name, new VariableSymbol(exp.type.type, exp.name));
