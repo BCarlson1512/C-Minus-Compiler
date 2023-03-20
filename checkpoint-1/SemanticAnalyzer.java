@@ -28,15 +28,6 @@ public class SemanticAnalyzer {
         visit(result);
     }
 
-    public void visit(DecList decList) {
-        while (decList != null) {
-            if (decList.head == null) {
-                visit(decList.head);
-            }
-            decList = decList.tail;
-        }
-    }
-
     public void visit(CallExp exp) {
         String fnName = exp.func;
         int row = exp.row + 1;
@@ -87,28 +78,10 @@ public class SemanticAnalyzer {
         }
     }
 
-    public void visit(Exp expr, int level) {
-        if (expr instanceof ReturnExp) {
-            visit((ReturnExp) expr);
-        } else if (expr instanceof CompoundExp) {
-            visit((CompoundExp) expr);
-        } else if (expr instanceof WhileExp) {
-            visit((WhileExp) expr);
-        } else if (expr instanceof IfExp) {
-            visit((IfExp) expr);
-        } else if (expr instanceof AssignExp) {
-            visit((AssignExp) expr);
-        } else if (expr instanceof OpExp) {
-            visit((OpExp) expr);
-        } else if (expr instanceof CallExp) {
-            visit((CallExp) expr);
-        } else if (expr instanceof VarExp) {
-            visit((VarExp) expr);
-        }
-    }
-
     public void visit(FunctionDec dec) {
         // TODO: Implement visitor function
+        fnReturnType = expr.type.type;
+        if (expr.func.equals("main")) hasMain = true;
     }
 
     public void visit(VarDec dec) {
@@ -211,7 +184,18 @@ public class SemanticAnalyzer {
     }
 
     public void visit(CompoundExp expr) {
+        table.createNewScope();
+        visit(expr.decList);
+        visit(expr.expList);
+        table.deleteScope();
+    }
+
+    public void visit(CompoundExp expr, FunctionSymbol sym) {
         // TODO: Implement visitor function
+        boolean isNonVoid = sym.type != Type.VOID;
+        visit(expr.decList);
+        visit(expr.expList);
+        table.deleteScope();
     }
 
     public void visit(ArrayDec exp) {
