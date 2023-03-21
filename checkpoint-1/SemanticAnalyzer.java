@@ -220,16 +220,16 @@ public class SemanticAnalyzer {
 
         // Arrays cannot be void
         if (exp.type.type == Type.VOID) {
+            updateContainsErrors();
             System.err.println("[Line " + exp.row + "] Error: Array type" + exp.name + " cannot be void");
         }
 
         // Check if we're redeclaring a variable
         if (table.lookupSymbol(exp.name) != null) {
+            updateContainsErrors();
             System.err.println("[Line " + exp.row + "] Error: Variable " + exp.name + " already declared");
         }
 
-        // TODO: Validate types
-        // TODO: Redeclaration
         if (table.compareScopes(exp.name)) {
             System.err.println("Error: Line" + exp.row + 1 + "Variable '" + exp.name + "'  already declared");
         }
@@ -325,9 +325,6 @@ public class SemanticAnalyzer {
         return op == OpExp.PLUS || op == OpExp.MINUS || op == OpExp.TIMES || op == OpExp.OVER || op == OpExp.DIVIDE;
     }
 
-    public void visit(ReadExp exp) {
-    }
-
     public void visit(RepeatExp exp) {
         visit(exp.test);
         visit(exp.exps);
@@ -377,6 +374,7 @@ public class SemanticAnalyzer {
         int type = dec.type.type;
         String name = dec.name;
         int row = dec.row + 1;
+
         // Mismatched types:
         if (type == Type.VOID) {
             updateContainsErrors();

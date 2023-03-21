@@ -29,7 +29,7 @@ Current milestone: 2
 
 You have two options for running this project:
 
-- 1: use the test scripts (test.sh) and (testast.sh)
+- 1: use the test scripts (test.sh) and (testast.sh) (testsym.sh)
   - these test the ability to print the ast to stdout and to files
 - 2: use makefile rules
   - See makefile for further explanation
