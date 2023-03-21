@@ -412,38 +412,27 @@ public class SemanticAnalyzer {
     private String operatorToString(int op) {
         switch( op ) {
         case OpExp.PLUS:
-            System.out.println( " + " );
-            break;
+            return" + ";
         case OpExp.MINUS:
-            System.out.println( " - " );
-            break;
+            return" - ";
         case OpExp.TIMES:
-            System.out.println( " * " );
-            break;
+            return" * ";
         case OpExp.OVER:
-            System.out.println( " / " );
-            break;
+            return" / ";
         case OpExp.EQ:
-            System.out.println( " = " );
-            break;
+            return" = ";
         case OpExp.LT:
-            System.out.println( " < " );
-            break;
+            return" < ";
         case OpExp.GT:
-            System.out.println( " > " );
-            break;
+            return" > ";
         case OpExp.NOTEQ:
-            System.out.println( " != " );
-            break;
+            return" != ";
         case OpExp.EQEQ:
-            System.out.println( " == " );
-            break;
+            return" == ";
         case OpExp.GTE:
-            System.out.println( " >= " );
-            break;
+            return" >= ";
         case OpExp.LTE:
-            System.out.println( " <= " );
-            break;
+            return" <= ";
         }
     }
 
