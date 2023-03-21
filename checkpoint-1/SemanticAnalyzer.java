@@ -438,6 +438,7 @@ public class SemanticAnalyzer {
             default:
                 return "UNKNOWN";
         }
+        return "";
     }
 
     // Simple Declaration

@@ -36,35 +36,35 @@ Ex4:
 Ex5:
 	java -cp /usr/share/java/cup.jar:. Main ./test/C1_User/Ex5.cm -a
 
-Ex1_sym:
-	java -cp /usr/share/java/cup.jar:. Main ./test/C2_User/Ex1.cm -a -s
+M2_Ex1:
+	java -cp /usr/share/java/cup.jar:. Main ./test/C2_User/Ex1.cm -as
 
-Ex2_sym:
-	java -cp /usr/share/java/cup.jar:. Main ./test/C2_User/Ex2.cm -a -s
+M2_Ex2:
+	java -cp /usr/share/java/cup.jar:. Main ./test/C2_User/Ex2.cm -as
 
-Ex3_sym:
-	java -cp /usr/share/java/cup.jar:. Main ./test/C2_User/Ex3.cm -a -s
+M2_Ex3:
+	java -cp /usr/share/java/cup.jar:. Main ./test/C2_User/Ex3.cm -as
 
-Ex4_sym:
-	java -cp /usr/share/java/cup.jar:. Main ./test/C2_User/Ex4.cm -a -s
+M2_Ex4:
+	java -cp /usr/share/java/cup.jar:. Main ./test/C2_User/Ex4.cm -as
 
-Ex5_sym:
-	java -cp /usr/share/java/cup.jar:. Main ./test/C2_User/Ex5.cm -a -s
+M2_Ex5:
+	java -cp /usr/share/java/cup.jar:. Main ./test/C2_User/Ex5.cm -as
 
 fac:
-	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/fac.cm -a -s
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/fac.cm -as
 
 gcd:
-	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/gcd.cm -a -s
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/gcd.cm -as
 
 booltest:
-	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/booltest.cm -a -s
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/booltest.cm -as
 
 mutual:
-	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/mutual.cm -a -s
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/mutual.cm -as
 
 sort:
-	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/sort.cm -a -s
+	java -cp /usr/share/java/cup.jar:. Main ./test/C1_Provided/sort.cm -as
 
 clean:
 	rm -f parser.java Lexer.java sym.java *.class absyn/*.class *~ *.abs *.sym
