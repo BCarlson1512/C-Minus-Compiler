@@ -1,5 +1,7 @@
 *.class
 ._*
+*.tgz
+*.tar.gz
 Lexer.java
 parser.java
 sym.java
