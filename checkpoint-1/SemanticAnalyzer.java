@@ -149,7 +149,6 @@ public class SemanticAnalyzer {
         }
     }
 
-    // TODO: may need tweaks
     public void visit(IndexVar expr) {
         Symbol sym = table.lookupSymbol(expr.name);
         int row = expr.row + 1;

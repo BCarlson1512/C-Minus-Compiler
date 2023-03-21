@@ -117,9 +117,16 @@ start with program;
 program	          ::= declaration_list:s
                     {: 
                       RESULT = s;
-                      SemanticAnalyzer analyzer = new SemanticAnalyzer(true, RESULT); 
-                      System.out.println("\nSymbol Table:\n");
-                      System.out.println(analyzer.toString());
+                      SemanticAnalyzer analyzer = new SemanticAnalyzer(outputSymbolTable, RESULT); 
+                      if (outputSymbolTable) {
+                        System.out.println("\nSymbol Table:\n");
+                        System.out.println(analyzer.toString());
+                      }
+                      if (analyzer.containsErrors) {
+                        System.out.println("Compiled with errors \n");
+                      } else {
+                        System.out.println("Compiled without errors \n");
+                      }
                     :}
                   | ERROR 
                   {: RESULT= null; :}
