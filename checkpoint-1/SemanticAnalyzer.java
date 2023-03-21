@@ -376,23 +376,20 @@ public class SemanticAnalyzer {
     public void visit(SimpleDec dec) {
         int type = dec.type.type;
         String name = dec.name;
-
+        int row = dec.row + 1;
         // Mismatched types:
-        // if (type == Type.VOID) {
-        // setHasErrors();
-        // int row = exp.row + 1;
-        // System.err.println("Error: Variable: '" + name + "' was declared as void on
-        // line: " + row);
-        // }
+        if (type == Type.VOID) {
+            updateContainsErrors();
+            System.err.println("Error: Variable: '" + name + "' was declared as void on line: " + row);
+        }
 
-        // // Redeclaration:
-        // if (symbolTable.isSameScope(name)) {
-        // setHasErrors();
-        // int row = exp.row + 1;
-        // System.err.println("Error: Redeclaration of variable '" + name + "' on line:
-        // " + row);
-        // return;
-        // }
+        // Redeclaration:
+        if (table.compareScopes(name)) {
+            updateContainsErrors();
+            System.err.println("Error: Variable '" + name + "' redeclared on line:" + row);
+            return;
+        }
+
         System.err.println("Variable " + name + " Type " + type);
         VariableSymbol varSymbol = new VariableSymbol(type, name);
         table.addSymbolToScope(name, (Symbol) varSymbol);
