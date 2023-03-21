@@ -326,8 +326,7 @@ public class SemanticAnalyzer {
                                     "[Line " + exp.row + "] Error: Cannot compare " + getType(leftSymb.type) + " to "
                                             + getType(rightSymb.type));
                         }
-                    }
-                    {
+                    } else {
                         // Check that both operands are of type int
                         if (leftSymb.type != Type.INT || rightSymb.type != Type.INT) {
                             updateContainsErrors();
