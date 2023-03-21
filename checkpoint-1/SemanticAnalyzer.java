@@ -3,10 +3,8 @@ import symbol.*;
 import java.util.ArrayList;
 
 public class SemanticAnalyzer {
-    // TODO: Validate Array types (array range is int, index is int)
     // TODO: Validate assignments
     // TODO: Validate operations
-    // TODO: Validate test conditions (must be int)
 
     private SymbolTable table;
     private int fnReturnType;
@@ -408,6 +406,44 @@ public class SemanticAnalyzer {
                 return "VOID";
             default:
                 return "UNKNOWN";
+        }
+    }
+
+    private String operatorToString(int op) {
+        switch( op ) {
+        case OpExp.PLUS:
+            System.out.println( " + " );
+            break;
+        case OpExp.MINUS:
+            System.out.println( " - " );
+            break;
+        case OpExp.TIMES:
+            System.out.println( " * " );
+            break;
+        case OpExp.OVER:
+            System.out.println( " / " );
+            break;
+        case OpExp.EQ:
+            System.out.println( " = " );
+            break;
+        case OpExp.LT:
+            System.out.println( " < " );
+            break;
+        case OpExp.GT:
+            System.out.println( " > " );
+            break;
+        case OpExp.NOTEQ:
+            System.out.println( " != " );
+            break;
+        case OpExp.EQEQ:
+            System.out.println( " == " );
+            break;
+        case OpExp.GTE:
+            System.out.println( " >= " );
+            break;
+        case OpExp.LTE:
+            System.out.println( " <= " );
+            break;
         }
     }
 
