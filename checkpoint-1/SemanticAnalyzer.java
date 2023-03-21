@@ -138,12 +138,13 @@ public class SemanticAnalyzer {
             } else if (isVoidVariable) { // array declaration
                 updateContainsErrors();
                 System.err.println("Error: Invalid type " + varType + " array '" + varName + "' on line: " + row);
-            } 
-            //TODO: figure out invalid array conversions
-            //else { // invalid array conversion
-            //    updateContainsErrors();
-            //    System.err.println("Error: cannot convert array '" + varName + "to int/bool on line: " + row);
-            //}
+            }
+            // TODO: figure out invalid array conversions
+            // else { // invalid array conversion
+            // updateContainsErrors();
+            // System.err.println("Error: cannot convert array '" + varName + "to int/bool
+            // on line: " + row);
+            // }
         } else { // var is not defined
             updateContainsErrors();
             System.err.println("Error: Undefined variable '" + varName + "' on line: " + row);
@@ -235,16 +236,32 @@ public class SemanticAnalyzer {
         boolean nullArraySize = exp.size == null;
         int arrSize = (nullArraySize) ? 0 : exp.size.value;
         ArraySymbol arrSym = new ArraySymbol(exp.type.type, exp.name, arrSize);
-        table.addSymbolToScope(exp.name, (Symbol)arrSym);
+        table.addSymbolToScope(exp.name, (Symbol) arrSym);
     }
 
     public void visit(AssignExp exp) {
-        // Visit variable and expression
-        // visit(exp.lhs.var);
-        // visit left hand and right hand sides?
         visit(exp.lhs);
         visit(exp.rhs);
 
+        // Do LHS and RHS have the same type?
+        if (exp.lhs.var instanceof SimpleVar && exp.rhs instanceof VarExp) {
+            SimpleVar left = (SimpleVar) exp.lhs.var;
+            VarExp rightVar = (VarExp) exp.rhs;
+            if (rightVar.var instanceof SimpleVar) {
+                SimpleVar right = (SimpleVar) rightVar.var;
+
+                Symbol leftSymb = table.lookupSymbol(left.name);
+                Symbol rightSymb = table.lookupSymbol(right.name);
+
+                if (leftSymb.type != rightSymb.type) {
+                    System.err.println(
+                            "[Line " + exp.row + "] Error: Cannot assign " + getType(leftSymb.type) + " to "
+                                    + getType(rightSymb.type));
+                }
+            } else {
+                System.err.println("Error: Line" + exp.row + 1 + "cannot assign array to a simple variable");
+            }
+        }
     }
 
     // Visit each expression in the linked list of expressions until the tail is
