@@ -21,7 +21,7 @@ public class SymbolTable {
         return this.displayString;
     }
 
-    private String indent(int level) { // TODO: may be tweaked for toString() purposes
+    private String indent(int level) {
         String res = "";
         for (int i = 0; i < level * SPACES; i++)
             res += " ";
@@ -48,8 +48,8 @@ public class SymbolTable {
                 displayString = indent(currLevel) + displayString;
                 displayString = "Scope level: " + currLevel + "\n" + displayString;
                 displayScope(currLevel - 1);
+                displayString += "Leaving Scope Level: " + currLevel + "\n";
             }
-
             symTable.remove(currLevel - 1);
         }
     }
@@ -100,6 +100,7 @@ public class SymbolTable {
                 printVarSym((VariableSymbol) sym, level, s);
             }
         }
+        //displayString = "Leaving Scope Level: " +getScopeType(level) +"\n"+ displayString;
     }
 
     private void printArraySym(ArraySymbol sym, int level, String key) { // for all array symbols
@@ -125,7 +126,7 @@ public class SymbolTable {
             functionString += ",";
         }
         functionString += ")\n";
-        displayString = functionString + displayString;
+        displayString += functionString;
     }
 
     private void printVarSymbol(VariableSymbol sym, int level, String key) {
