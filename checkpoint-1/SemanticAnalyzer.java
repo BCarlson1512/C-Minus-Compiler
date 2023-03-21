@@ -307,6 +307,43 @@ public class SemanticAnalyzer {
         // Visit left and right operands
         visit(exp.left);
         visit(exp.right);
+
+        if (exp.left instanceof VarExp && exp.right instanceof VarExp) {
+            VarExp left = (VarExp) exp.left;
+            VarExp right = (VarExp) exp.right;
+            if (left.var instanceof SimpleVar && right.var instanceof SimpleVar) {
+                SimpleVar leftVar = (SimpleVar) left.var;
+                SimpleVar rightVar = (SimpleVar) right.var;
+                Symbol leftSymb = table.lookupSymbol(leftVar.name);
+                Symbol rightSymb = table.lookupSymbol(rightVar.name);
+
+                if (isRelationalOperator(exp.op)) {
+
+                    // Check that both operands are of type int
+                    if (leftSymb.type != Type.INT || rightSymb.type != Type.INT) {
+                        updateContainsErrors();
+                        System.err.println("[Line " + exp.row + "] Error: Relational operator " + exp.op
+                                + " expects operands of type int");
+                    }
+                } else if (isLogicalOperator(exp.op)) {
+                    // Check that both operands are of type bool
+                    if (leftSymb.type != Type.BOOL || rightSymb.type != Type.BOOL || leftSymb.type != Type.INT
+                            || rightSymb.type != Type.INT) {
+                        updateContainsErrors();
+                        System.err.println(
+                                "[Line " + exp.row + "] Error: Logical operator " + exp.op
+                                        + " expects operands of type bool or int");
+                    }
+                } else if (isArithmeticOperator(exp.op)) {
+                    // Check that both operands are of type int
+                    if (leftSymb.type != Type.INT || rightSymb.type != Type.INT) {
+                        updateContainsErrors();
+                        System.err.println("[Line " + exp.row + "] Error: Arithmetic operator " + exp.op
+                                + " expects operands of type int");
+                    }
+                }
+            }
+        }
     }
 
     private boolean isRelationalOperator(int op) {
