@@ -56,12 +56,16 @@ class Main {
       p.outputSymbolTable = outputSymbolTable;
       if (outputAbsyn) {
         System.setOut(new PrintStream(new FileOutputStream(outputBaseFileName + ".sym")));
+      } else {
+        System.setOut(System.out);
       }
 
       Absyn result = (Absyn) (p.parse().value);
 
       if (outputAbsyn) {
         System.setOut(new PrintStream(new FileOutputStream(outputBaseFileName + ".abs")));
+      } else {
+        System.setOut(System.out);
       }
 
       if (SHOW_TREE && result != null) {
