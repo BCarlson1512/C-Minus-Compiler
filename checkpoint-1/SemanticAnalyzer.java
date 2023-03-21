@@ -319,11 +319,21 @@ public class SemanticAnalyzer {
 
                 if (isRelationalOperator(exp.op)) {
 
-                    // Check that both operands are of type int
-                    if (leftSymb.type != Type.INT || rightSymb.type != Type.INT) {
-                        updateContainsErrors();
-                        System.err.println("[Line " + exp.row + "] Error: Relational operator " + exp.op
-                                + " expects operands of type int");
+                    if (exp.op == OpExp.EQEQ || exp.op == OpExp.NOTEQ) {
+                        if (leftSymb.type != rightSymb.type) {
+                            updateContainsErrors();
+                            System.err.println(
+                                    "[Line " + exp.row + "] Error: Cannot compare " + getType(leftSymb.type) + " to "
+                                            + getType(rightSymb.type));
+                        }
+                    }
+                    {
+                        // Check that both operands are of type int
+                        if (leftSymb.type != Type.INT || rightSymb.type != Type.INT) {
+                            updateContainsErrors();
+                            System.err.println("[Line " + exp.row + "] Error: Relational operator " + exp.op
+                                    + " expects operands of type int");
+                        }
                     }
                 } else if (isLogicalOperator(exp.op)) {
                     // Check that both operands are of type bool
@@ -347,7 +357,7 @@ public class SemanticAnalyzer {
 
     private boolean isRelationalOperator(int op) {
         return op == OpExp.LT || op == OpExp.LTE || op == OpExp.GT || op == OpExp.GTE || op == OpExp.EQ
-                || op == OpExp.NOTEQ;
+                || op == OpExp.NOTEQ || op == OpExp.EQEQ;
     }
 
     private boolean isLogicalOperator(int op) {
