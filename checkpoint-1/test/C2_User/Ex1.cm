@@ -1,1 +1,14 @@
-/ * a program that compiles clean without errors */
+/* a program that compiles clean without errors */
+
+int g(int n) {
+  return 5;
+}
+
+void main(void) {
+  int x;
+
+  x = 5;
+  x = g(5); 
+
+  output(x);
+}

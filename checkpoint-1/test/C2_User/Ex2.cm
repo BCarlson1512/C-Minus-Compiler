@@ -1,1 +1,9 @@
 /* a program with a single semantic error */
+
+void main(void) {
+  int x;
+
+  x = y;
+
+  output(x);
+}
