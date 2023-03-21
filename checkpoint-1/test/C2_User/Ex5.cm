@@ -2,11 +2,21 @@
 
 void main(void) {
   int x;
+  void z;
+  void p;
   bool y;
+  bool w;
+  bool v;
 
   if (x && y || x != y) {
     return;
   }
+
+  if (z && p) {
+    return;
+  }
+
+  v = w + y;
 
   return;
 }

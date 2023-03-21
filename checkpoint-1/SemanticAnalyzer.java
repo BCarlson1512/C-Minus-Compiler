@@ -226,7 +226,7 @@ public class SemanticAnalyzer {
         }
 
         if (table.compareScopes(exp.name)) {
-            System.err.println("Error: Line" + exp.row + 1 + "Variable '" + exp.name + "'  already declared");
+            System.err.println("Error: Line " + exp.row + 1 + " Variable '" + exp.name + "'  already declared");
         }
         boolean nullArraySize = exp.size == null;
         int arrSize = (nullArraySize) ? 0 : exp.size.value;
@@ -254,7 +254,7 @@ public class SemanticAnalyzer {
                                     + getType(rightSymb.type));
                 }
             } else {
-                System.err.println("Error: Line" + exp.row + 1 + "cannot assign array to a simple variable");
+                System.err.println("Error: Line " + exp.row + 1 + " cannot assign array to a simple variable");
             }
         }
     }
@@ -438,7 +438,6 @@ public class SemanticAnalyzer {
             default:
                 return "UNKNOWN";
         }
-        return "";
     }
 
     // Simple Declaration
