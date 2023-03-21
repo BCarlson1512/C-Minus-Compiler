@@ -9,6 +9,9 @@ void main(void) {
 
   x = 5;
   x = g(5); 
+  while (x < 10) {
+    output(x);
+  }
 
   output(x);
 }

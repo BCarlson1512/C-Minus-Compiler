@@ -39,8 +39,6 @@ public class SemanticAnalyzer {
             System.err.println("Error: Undefined function '" + fnName + "' on line: " + row);
         }
 
-        System.err.println("fnParams: " + numFnParams + " CallParams: " + numCallParams);
-
         if (numFnParams != numCallParams) { // check for valid number of parameters
             updateContainsErrors();
             System.err.println("Error: Invalid number of parameters for function '" + fnName + "' on line: " + row);
@@ -388,7 +386,6 @@ public class SemanticAnalyzer {
             return;
         }
 
-        System.err.println("Variable " + name + " Type " + type);
         VariableSymbol varSymbol = new VariableSymbol(type, name);
         table.addSymbolToScope(name, (Symbol) varSymbol);
     }
