@@ -24,6 +24,7 @@ class Main {
     /* Start the parser */
     try {
       String fileName = argv[0];
+      PrintStream stdout = System.out;
 
       // Should we output the abstract syntax tree in a .abs file?
       Boolean outputAbsyn = false;
@@ -54,10 +55,10 @@ class Main {
       parser p = new parser(new Lexer(new FileReader(fileName)));
 
       p.outputSymbolTable = outputSymbolTable;
-      if (outputAbsyn) {
+      if (outputSymbolTable) {
         System.setOut(new PrintStream(new FileOutputStream(outputBaseFileName + ".sym")));
       } else {
-        System.setOut(System.out);
+        System.setOut(stdout);
       }
 
       Absyn result = (Absyn) (p.parse().value);
@@ -65,7 +66,7 @@ class Main {
       if (outputAbsyn) {
         System.setOut(new PrintStream(new FileOutputStream(outputBaseFileName + ".abs")));
       } else {
-        System.setOut(System.out);
+        System.setOut(stdout);
       }
 
       if (SHOW_TREE && result != null) {
