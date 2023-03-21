@@ -327,8 +327,7 @@ public class SemanticAnalyzer {
                     }
                 } else if (isLogicalOperator(exp.op)) {
                     // Check that both operands are of type bool
-                    if (leftSymb.type != Type.BOOL || rightSymb.type != Type.BOOL || leftSymb.type != Type.INT
-                            || rightSymb.type != Type.INT) {
+                    if (leftSymb.type == Type.VOID || rightSymb.type == Type.VOID) {
                         updateContainsErrors();
                         System.err.println(
                                 "[Line " + exp.row + "] Error: Logical operator " + exp.op
