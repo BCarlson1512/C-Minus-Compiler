@@ -1,8 +1,11 @@
 /* a program with at least 1 semantic error */
 
 void main(void) {
-  if (true) {
-    return 5;
+  int x;
+  bool y;
+
+  if (x && y || x != y) {
+    return;
   }
 
   return;
