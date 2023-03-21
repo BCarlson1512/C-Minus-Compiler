@@ -11,8 +11,13 @@ make mutual
 make sort
 
 echo "----- Testing C2_User Created Files -----"
-make Ex1_sym
-make Ex2_sym
-make Ex3_sym
-make Ex4_sym
-make Ex5_sym
+echo "----- Testing C2_User/Ex1.cm -----"
+make M2_Ex1
+echo "----- Testing C2_User/Ex2.cm -----"
+make M2_Ex2
+echo "----- Testing C2_User/Ex3.cm -----"
+make M2_Ex3
+echo "----- Testing C2_User/Ex4.cm -----"
+make M2_Ex4
+echo "----- Testing C2_User/Ex5.cm -----"
+make M2_Ex5

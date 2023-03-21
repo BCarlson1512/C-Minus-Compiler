@@ -24,6 +24,7 @@ Current milestone: 2
   - Testing can be seen under `testing_plan.md`
 - M2
   - Refer to  M2_Report
+  - Run testsym.sh to run all tests
 
 ## Build/Run
 
