@@ -328,8 +328,9 @@ public class SemanticAnalyzer {
                         // Check that both operands are of type int
                         if (leftSymb.type != Type.INT || rightSymb.type != Type.INT) {
                             updateContainsErrors();
-                            System.err.println("[Line " + exp.row + "] Error: Relational operator " + exp.op
-                                    + " expects operands of type int");
+                            System.err.println(
+                                    "[Line " + exp.row + "] Error: Relational operator " + operatorToString(exp.op)
+                                            + " expects operands of type int");
                         }
                     }
                 } else if (isLogicalOperator(exp.op)) {
@@ -337,15 +338,16 @@ public class SemanticAnalyzer {
                     if (leftSymb.type == Type.VOID || rightSymb.type == Type.VOID) {
                         updateContainsErrors();
                         System.err.println(
-                                "[Line " + exp.row + "] Error: Logical operator " + exp.op
+                                "[Line " + exp.row + "] Error: Logical operator " + operatorToString(exp.op)
                                         + " expects operands of type bool or int");
                     }
                 } else if (isArithmeticOperator(exp.op)) {
                     // Check that both operands are of type int
                     if (leftSymb.type != Type.INT || rightSymb.type != Type.INT) {
                         updateContainsErrors();
-                        System.err.println("[Line " + exp.row + "] Error: Arithmetic operator " + exp.op
-                                + " expects operands of type int");
+                        System.err
+                                .println("[Line " + exp.row + "] Error: Arithmetic operator " + operatorToString(exp.op)
+                                        + " expects operands of type int");
                     }
                 }
             }
@@ -410,29 +412,31 @@ public class SemanticAnalyzer {
     }
 
     private String operatorToString(int op) {
-        switch( op ) {
-        case OpExp.PLUS:
-            return" + ";
-        case OpExp.MINUS:
-            return" - ";
-        case OpExp.TIMES:
-            return" * ";
-        case OpExp.OVER:
-            return" / ";
-        case OpExp.EQ:
-            return" = ";
-        case OpExp.LT:
-            return" < ";
-        case OpExp.GT:
-            return" > ";
-        case OpExp.NOTEQ:
-            return" != ";
-        case OpExp.EQEQ:
-            return" == ";
-        case OpExp.GTE:
-            return" >= ";
-        case OpExp.LTE:
-            return" <= ";
+        switch (op) {
+            case OpExp.PLUS:
+                return " + ";
+            case OpExp.MINUS:
+                return " - ";
+            case OpExp.TIMES:
+                return " * ";
+            case OpExp.OVER:
+                return " / ";
+            case OpExp.EQ:
+                return " = ";
+            case OpExp.LT:
+                return " < ";
+            case OpExp.GT:
+                return " > ";
+            case OpExp.NOTEQ:
+                return " != ";
+            case OpExp.EQEQ:
+                return " == ";
+            case OpExp.GTE:
+                return " >= ";
+            case OpExp.LTE:
+                return " <= ";
+            default:
+                return "UNKNOWN";
         }
     }
 
