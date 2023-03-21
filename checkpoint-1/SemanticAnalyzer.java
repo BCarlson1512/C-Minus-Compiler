@@ -248,7 +248,7 @@ public class SemanticAnalyzer {
                 Symbol leftSymb = table.lookupSymbol(left.name);
                 Symbol rightSymb = table.lookupSymbol(right.name);
 
-                if (leftSymb.type != rightSymb.type) {
+                if (leftSymb != null && rightSymb != null && leftSymb.type != rightSymb.type) {
                     System.err.println(
                             "[Line " + exp.row + "] Error: Cannot assign " + getType(leftSymb.type) + " to "
                                     + getType(rightSymb.type));
