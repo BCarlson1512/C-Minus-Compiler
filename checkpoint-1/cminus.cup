@@ -12,6 +12,7 @@ import absyn.*;
 parser code {:
 
     public static boolean outputSymbolTable;
+    public static boolean outputASM;
     
     /* Change the method report_error so it will display the line and
        column of where the error occurred in the input as well as the
@@ -120,6 +121,7 @@ program	          ::= declaration_list:s
                       SemanticAnalyzer analyzer = new SemanticAnalyzer(true, RESULT); 
                       System.out.println("\nSymbol Table:\n");
                       System.out.println(analyzer.toString());
+                      if (!analyzer.containsErrors)
                       if (analyzer.containsErrors) {
                         System.out.println("Compiled with errors \n");
                       } else {

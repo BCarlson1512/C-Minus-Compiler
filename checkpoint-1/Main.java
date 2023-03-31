@@ -20,17 +20,23 @@ import absyn.Absyn;
 class Main {
   public final static boolean SHOW_TREE = true;
 
+  public static boolean outputAbsyn = false;
+  public static boolean outputSymbolTable = false;
+  public static boolean generateASM = false;
+
   static public void main(String argv[]) {
     /* Start the parser */
     try {
+      processArgs();
       String fileName = argv[0];
       PrintStream stdout = System.out;
 
-      // Should we output the abstract syntax tree in a .abs file?
-      Boolean outputAbsyn = false;
-      Boolean outputSymbolTable = false;
+      //Boolean outputAbsyn = false;
+      //Boolean outputSymbolTable = false;
+      //Boolean generateASM = false;
 
       // Set booleans based on command line arguments.
+      /*
       for (Integer i = 0; i < argv.length; i++) {
         if (argv[i].equals("-s")) { // -s and can happen continuously
           outputSymbolTable = true;
@@ -43,7 +49,7 @@ class Main {
           fileName = argv[i];
         }
       }
-
+      */
       String[] pathSegments = fileName.split("/");
       String lastSegment = pathSegments[pathSegments.length - 1];
 
@@ -55,6 +61,14 @@ class Main {
       parser p = new parser(new Lexer(new FileReader(fileName)));
 
       p.outputSymbolTable = outputSymbolTable;
+      p.generateASM = generateASM;
+
+      if (generateASM) {
+        System.setOut(new PrintStream(new FileOutputStream(outputBaseFileName + ".tm")));
+      } else {
+        System.setOut(stdout);
+      }
+
       if (outputSymbolTable) {
         System.setOut(new PrintStream(new FileOutputStream(outputBaseFileName + ".sym")));
       } else {
@@ -80,5 +94,16 @@ class Main {
       /* do cleanup here -- possibly rethrow e */
       e.printStackTrace();
     }
+  }
+}
+
+public void processArgs(String args[]) {
+  for (String arg : args) {
+    if (!arg.contains("-")) {
+      continue;
+    }
+    outputAbsyn = arg.contains("a");
+    outputSymbolTable = arg.contains("s");
+    generateASM = arg.contains("c");
   }
 }
