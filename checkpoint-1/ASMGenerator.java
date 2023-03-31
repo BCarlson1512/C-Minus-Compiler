@@ -248,7 +248,24 @@ public class ASMGenerator {
     // Function decs
 
     public void visit(FunctionDec tree) {
-        
+        int offset = -2;
+        emitComment("-> funcdec");
+        emitComment("processing function: " + tree.func);
+        emitComment("jump around function body");
+        int tmpLoc = emitSkip(1);
+        FunctionSymbol funSym = new FunctionSymbol(Type.INT, tree.func, null, emitLoc);
+        symTable.addSymbolToScope(tree.func, funSym);
+        symTable.createNewScope();
+        emitRM("ST", 0, -1, FP, "store return");
+        offset = visit(tree.params, offset, true);
+        offset = visit(tree.body, offset, false);
+        emitRM("LD", PC, -1, FP, "call return");
+        int tmpLoc2 = emitSkip(0);
+        emitBackup();
+        emitRMAbs("LDA", PC, tmpLoc2, "Jump around fun body");
+        emitRestore();
+        emitComment("<- funcdec");
+        symTable.deleteScope();
     }
 
     // Varexp
@@ -287,7 +304,24 @@ public class ASMGenerator {
     // CallExp
 
     public void visit(CallExp tree, int offset) {
-        
+        int i = -2;
+        FunctionSymbol funSym = (FunctionSymbol)symTable.get(tree.func);
+        emitComment("-> call");
+        emitComment("function call name: " tree.func);
+        while(tree.args != null) {
+            if (tree.args.head != null) {
+                visit(tree.args.head, offset, false);
+                emitRM("ST", AC, offset+i, FP, "op: push left");
+                i--;
+            }
+            tree.args = tree.args.head;
+        }
+        emitRM("ST", FP, offset, FP, "push ofp");
+        emitRM("LDA", FP, offset, FP, "push frame");
+        emitRM("LDA", 0, 1, PC, "load ac with return ptr");
+        emitRMAbs("LDA", PC, funSym.fun_address, "jump to function loc");
+        emitRM("LD", FP, 0, FP, "pop frame");
+        emitComment("<- call");
     }
 
     // OpExp
