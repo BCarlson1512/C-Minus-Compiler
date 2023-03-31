@@ -6,8 +6,21 @@ import java.util.ArrayList;
 
 public class ASMGenerator {
 
+    // Special registers
+    public static final int PC = 7;
+    public static final int GP = 6;
+    public static final int FP = 5;
+    public static final int AC = 0;
+    public static final int AC1 = 1;
+
     public String fileName;
 
+    // emit locations
+    public int emitLoc = 0;
+    public int highEmitLoc = 0;
+    public int globalOffset = 0;
+
+    // Absyn + sym table requirements
     private SymbolTable symTable;
     private DecList program;
 
@@ -19,144 +32,243 @@ public class ASMGenerator {
 
     // driver function
     public void generate() {
-
+        generateASM(this.program);
     }
 
     // wrapper for all other codegen functions
     public void generateASM(DecList tree) {
 
-    }
+        // Setup sym table
+        symTable.createNewScope();
+        // input and output functions
 
+        // Generate Prelude
+        emitComment("Generating Standard Prelude");
+        emitRM("LD", GP, 0, AC, "Load GP with max addr");
+        emitRM("LDA", FP, 0, GP, "Copy GP to FP");
+        emitRM("ST", 0, 0, 0, "Clear location 0");
+        int tmpEmitLoc1 = emitSkip(1);
+
+        // generate input function
+
+        emitComment("Jump around I/O Functions");
+        emitComment("Input routine");
+
+        emitRM("ST", 0, -1, FP, "Store return");
+        emitOP("IN", 0, 0, 0, "");
+        emitRM("LD", PC, -1, FP, "Call return");
+
+        // generate output function
+        emitComment("Output routine");
+
+        emitRM("ST", 0, -1, FP, "Store return");
+        emitRM("LD", 0, -2, FP, "Load output value");
+        emitOP("OUT", 0, 0, 0, "");
+        emitRM("LD", 7,-1,FP, "Call return");
+        int tmpEmitLoc2 = emitSkip(0);
+        
+        // jump around I/O functions
+        emitBackup(savedLoc);
+        emitRMAbs("LDA", PC, tmpEmitLoc2, "Jump around I/O functions");
+        emitComment("End of standard prelude...");
+        emitRestore();
+
+        // Generate code around main
+
+        while (tree != null) { // traverse tree, generating code recursively
+            if (tree.head != null) {
+                visit(tree.head);
+            }
+            tree = tree.tail;
+        }
+
+        // generate finale
+        FunctionSymbol mainSym = (FunctionSymbol)symTable.getFunction("main");
+        emitComment("Generating Finale");
+        emitRM("ST", FP, globalOffset, FP, "Push old FP");
+        emitRM("LDA", FP, globalOffset, FP, "Push frame");
+        emitRM("LDA", 0, 1, PC, "Load AC with return ptr");
+
+        // get main address from sym table
+        emitRMAbs("LDA", PC, mainSym.address, "Jump to main");
+        emitRM("LD", FP, 0, FP, "Pop Frame");
+        emitOP("HALT", 0, 0, 0, "");
+        // exit scope
+        symTable.deleteScope();
+    }
 
     // VarDecList
 
-    public void asmGen(VarDecList tree, int offset, boolean isParam) {
+    public void visit(VarDecList tree, int offset, boolean isParam) {
 
     }
 
     // Expression List
 
-    public void asmGen(ExpList tree, int offset){
+    public void visit(ExpList tree, int offset){
 
     }
 
     // General declarations
 
-    public void asmGen(Dec tree){
+    public void visit(Dec tree){
 
     }
 
     // Var and param declarations
 
-    public void asmGen(VarDec tree, int offset, boolean isParam) {
+    public void visit(VarDec tree, int offset, boolean isParam) {
 
     }
 
     // Expressions
 
-    public void asmGen(Exp tree, int offset, boolean isAddr) {
+    public void visit(Exp tree, int offset, boolean isAddr) {
 
         if (tree instanceof NilExp) {
 
         } else if (tree instanceof VarExp) {
-            asmGen((VarExp)tree, offset, isAddr);
+            visit((VarExp)tree, offset, isAddr);
         } else if (tree instanceof CallExp) {
-            asmGen((CallExp)tree, offset);
+            visit((CallExp)tree, offset);
         } else if (tree instanceof OpExp) {
-            asmGen((OpExp)tree, offset);
+            visit((OpExp)tree, offset);
         } else if (tree instanceof AssignExp) {
-            asmGen((AssignExp)tree, offset);
+            visit((AssignExp)tree, offset);
         }  else if (tree instanceof IfExp) {
-            asmGen((IfExp)tree, offset);
+            visit((IfExp)tree, offset);
         } else if (tree instanceof WhileExp) {
-            asmGen((WhileExp)tree, offset);
+            visit((WhileExp)tree, offset);
         } else if (tree instanceof ReturnExp) {
-            asmGen((ReturnExp)tree, offset);
+            visit((ReturnExp)tree, offset);
         } else if (tree instanceof CompoundExp) {
-            asmGen((CompoundExp)tree, offset);
+            visit((CompoundExp)tree, offset);
         } else if (tree instanceof IntExp) {
-            asmGen((IntExp)tree);
+            visit((IntExp)tree);
         }
         return offset;
     }
 
     // Simple vars
 
-    public void asmGen(SimpleVar tree, int offset, boolean isAddr) {
+    public void visit(SimpleVar tree, int offset, boolean isAddr) {
 
     }
 
     // Index vars
 
-    public void asmGen(IndexVar tree, int offset, boolean isAddr) {
+    public void visit(IndexVar tree, int offset, boolean isAddr) {
         
     }
 
     // Function decs
 
-    public void asmGen(FunctionDec tree) {
+    public void visit(FunctionDec tree) {
         
     }
 
     // Varexp
 
-    public void asmGen(VarExp tree, int offset, boolean isAddr) {
+    public void visit(VarExp tree, int offset, boolean isAddr) {
         
     }
 
     // IntExp
 
-    public void asmGen(IntExp tree) {
+    public void visit(IntExp tree) {
         
     }
 
     // CallExp
 
-    public void asmGen(CallExp tree, int offset) {
+    public void visit(CallExp tree, int offset) {
         
     }
 
     // OpExp
 
-    public void asmGen(OpExp tree, int offset) {
+    public void visit(OpExp tree, int offset) {
         
     }
 
     // AssignExp
 
-    public void asmGen(AssignExp tree, int offset) {
+    public void visit(AssignExp tree, int offset) {
         
     }
 
     // IfExp
 
-    public void asmGen(IfExp tree, int offset) {
+    public void visit(IfExp tree, int offset) {
         
     }
 
     // WhileExp
 
-    public void asmGen(WhileExp tree, int offset) {
+    public void visit(WhileExp tree, int offset) {
         
     }
 
     // ReturnExp
 
-    public void asmGen(ReturnExp tree, int offset) {
+    public void visit(ReturnExp tree, int offset) {
         
     }
     
     // CompoundExp
     
-    public void asmGen(CompoundExp tree, int offset) {
+    public void visit(CompoundExp tree, int offset) {
         
     }
 
     // Helpers for code gen
 
-    public writeComment(String comment) {
+    public void emitComment(String comment) {
         comment = "* " + comment + "\n";
         writeCode(comment);
+    }
+
+    public void emitRM(Stirng op, int r, int offset, int r1, String comment) {
+        String code = emitLoc + ": " + op + " " + r " " + "," + offset + "(" + r1 +")";
+        writeCode(code);
+        emitLoc++;
+        writeCode("\t" + comment);
+        writeCode("\n");
+        highEmitLoc = Math.max(highEmitLoc, emitLoc);
+    }
+
+    public void emitOP(Stirng op, int dest, int r, int r1, String comment) {
+        String code = emitLoc + ": " + op + " " + dest " " + "," + r + "," + r1;
+        writeCode(code);
+        emitLoc++;
+        writeCode("\t" + comment);
+        writeCode("\n");
+        //highEmitLoc = Math.max(highEmitLoc, emitLoc); //uncomment later if bugs arise
+    }
+
+    public void emitRMAbs(String op, int r, int a, String comment) {
+        String code = emitLoc + ": " + op + " " + r " " + "," + (a-(emitLoc+1)) + "(" + PC +")";
+        writeCode(code);
+        emitLoc++;
+        writeCode("\t" + comment);
+        writeCode("\n");
+        highEmitLoc = Math.max(highEmitLoc, emitLoc);
+    }
+
+    public void emitRestore() {
+        emitLoc = highEmitLoc;
+    }
+
+    public void emitBackup(int loc){ 
+        emitLoc = loc;
+    }
+
+    // skip portions of code, return existing label value
+    public int emitSkip(int dist) {
+        int i = emitLoc;
+        emitLoc += dist;
+        highEmitLoc = Math.max(highEmitLoc, emitLoc);
+        return i;
     }
 
     public void writeCode(String contents) {
