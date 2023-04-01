@@ -83,18 +83,21 @@ public class ASMGenerator {
         }
 
         // generate finale
-        FunctionSymbol mainSym = (FunctionSymbol)symTable.lookupFn("main");
+        generateFinale();
+        // exit scope
+        symTable.deleteScope();
+    }
+
+    private void generateFinale() {
         emitComment("Generating Finale");
         emitRM("ST", FP, globalOffset, FP, "Push old FP");
         emitRM("LDA", FP, globalOffset, FP, "Push frame");
         emitRM("LDA", 0, 1, PC, "Load AC with return ptr");
-
-        // get main address from sym table
+        
+        FunctionSymbol mainSym = (FunctionSymbol)symTable.lookupFn("main");
         emitRMAbs("LDA", PC, mainSym.fun_address, "Jump to main");
         emitRM("LD", FP, 0, FP, "Pop Frame");
         emitOP("HALT", 0, 0, 0, "");
-        // exit scope
-        symTable.deleteScope();
     }
 
     // VarDecList
@@ -128,19 +131,9 @@ public class ASMGenerator {
             VarDec vd = (VarDec)tree;
             // Globally scoped vars?
             if (vd instanceof SimpleDec) {
-                SimpleDec svd = (SimpleDec)vd;
-                VariableSymbol varSym = new VariableSymbol(svd.name, svd.type.type, globalOffset);
-                symTable.addSymbolToScope(svd.name, varSym);
-                emitComment("Add var to global scope: " + svd.name);
-                emitComment("<- vardec");
-                globalOffset--;
+                simpleDecHelper((SimpleDec)vd, globalOffset, true, true, true);
             } else if (vd instanceof ArrayDec) {
-                ArrayDec avd = (ArrayDec)vd;
-                ArraySymbol arrSym = new ArraySymbol(avd.name, avd.type.type, avd.size.value, globalOffset-(avd.size.value-1));
-                symTable.addSymbolToScope(avd.name, arrSym);
-                emitComment("Add var to global scope: " + avd.name);
-                emitComment("<- vardec");
-                globalOffset--;
+                arrayDecHelper((ArrayDec)vd, globalOffset, true, true, true);
             }
         }
     }
@@ -150,29 +143,15 @@ public class ASMGenerator {
     public int visit(VarDec tree, int offset, boolean isParam) {
         if (isParam) {
             if (tree instanceof SimpleDec) {
-                SimpleDec svd = (SimpleDec)tree;
-                VariableSymbol varSym = new VariableSymbol(svd.name, svd.type.type, offset);
-                symTable.addSymbolToScope(svd.name, varSym);
-                offset--;
+                simpleDecHelper((SimpleDec)tree, offset, true, false, false);
             } else if (tree instanceof ArrayDec) {
-                ArrayDec avd = (ArrayDec)tree;
-                ArraySymbol arrSym = new ArraySymbol(avd.name, avd.type.type, offset--, avd.size.value);
-                symTable.addSymbolToScope(avd.name, arrSym);
+                arrayDecHelper((ArrayDec)tree, offset, false, false, false);
             }
         } else {
             if (tree instanceof SimpleDec) {
-                SimpleDec svd = (SimpleDec)tree;
-                VariableSymbol varSym = new VariableSymbol(svd.name, svd.type.type, offset);
-                symTable.addSymbolToScope(svd.name, varSym);
-                offset--;
-                emitComment("processing local var: " + svd.name);
+                simpleDecHelper((SimpleDec)tree, offset, true, false, true);
             } else if (tree instanceof ArrayDec) {
-                ArrayDec avd = (ArrayDec)tree;
-                offset = offset-(avd.size.value-1);
-                ArraySymbol arrSym = new ArraySymbol(avd.name, avd.type.type, avd.size.value, offset);
-                symTable.addSymbolToScope(avd.name, arrSym);
-                offset--;
-                emitComment("processing local (array) var: " + avd.name);
+                arrayDecHelper((ArrayDec)tree, offset, true, false, true);
             }
         }
         return offset;
@@ -583,6 +562,33 @@ public class ASMGenerator {
         }
         outputStream.printf(contents);
         outputStream.close();
+    }
+
+    // Redundant code helpers
+
+    private void simpleDecHelper(SimpleDec svd, int offset, boolean updateOffset, boolean isGlobal, boolean emitComments) {
+        VariableSymbol varSym = new VariableSymbol(svd.name, svd.type.type, offset);
+        symTable.addSymbolToScope(svd.name, varSym);
+        if (updateOffset) offset--;
+        if (isGlobal && emitComments) {
+            emitComment("Add var to global scope: " + svd.name);
+            emitComment("<- vardec");
+        } else if(emitComments) {
+            emitComment("processing local var: " + svd.name);
+        }
+    }
+
+    private void arrayDecHelper(ArrayDec avd, int offset, boolean updateOffset, boolean isGlobal, boolean emitComments) {
+        if (updateOffset && !isGlobal) offset = offset - (avd.size.value-1);
+        ArraySymbol arrSym = new ArraySymbol(avd.name, avd.type.type, avd.size.value, offset);
+        symTable.addSymbolToScope(avd.name, arrSym);
+        if (updateOffset) offset--;
+        if (isGlobal && emitComments) {
+            emitComment("Add var to global scope: " + avd.name);
+            emitComment("<- vardec");
+        } else if (emitComments) {
+            emitComment("processing local (array) var: " + avd.name);
+        }
     }
 
 }
