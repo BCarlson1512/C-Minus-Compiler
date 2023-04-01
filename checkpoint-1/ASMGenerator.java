@@ -368,7 +368,7 @@ public class ASMGenerator {
         generateOpCode(tree.op);
     }
 
-    public void generateOpCode(int op) {
+    private void generateOpCode(int op) {
         switch (op) {
             case OpExp.PLUS:
                 emitOP("ADD", AC, 1, AC, "op +");
