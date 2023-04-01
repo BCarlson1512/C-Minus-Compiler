@@ -68,7 +68,7 @@ public class ASMGenerator {
         int tmpEmitLoc2 = emitSkip(0);
         
         // jump around I/O functions
-        emitBackup(savedLoc);
+        emitBackup(tmpEmitLoc1);
         emitRMAbs("LDA", PC, tmpEmitLoc2, "Jump around I/O functions");
         emitComment("End of standard prelude...");
         emitRestore();
@@ -83,14 +83,14 @@ public class ASMGenerator {
         }
 
         // generate finale
-        FunctionSymbol mainSym = (FunctionSymbol)symTable.getFunction("main");
+        FunctionSymbol mainSym = (FunctionSymbol)symTable.lookupFn("main");
         emitComment("Generating Finale");
         emitRM("ST", FP, globalOffset, FP, "Push old FP");
         emitRM("LDA", FP, globalOffset, FP, "Push frame");
         emitRM("LDA", 0, 1, PC, "Load AC with return ptr");
 
         // get main address from sym table
-        emitRMAbs("LDA", PC, mainSym.address, "Jump to main");
+        emitRMAbs("LDA", PC, mainSym.fun_address, "Jump to main");
         emitRM("LD", FP, 0, FP, "Pop Frame");
         emitOP("HALT", 0, 0, 0, "");
         // exit scope
@@ -99,7 +99,7 @@ public class ASMGenerator {
 
     // VarDecList
 
-    public void visit(VarDecList tree, int offset, boolean isParam) {
+    public int visit(VarDecList tree, int offset, boolean isParam) {
         while (tree != null) {
             if (tree.head != null) offset = visit(tree.head, offset, isParam);
             tree = tree.tail;
@@ -111,7 +111,9 @@ public class ASMGenerator {
 
     public void visit(ExpList tree, int offset){
         while (tree != null) {
-            if (tree.head != null) offset = visit(tree.head, offset, false);
+            if (tree.head != null) {
+                visit(tree.head, offset, false);
+            }
             tree = tree.tail;
         }
     }
@@ -127,14 +129,14 @@ public class ASMGenerator {
             // Globally scoped vars?
             if (vd instanceof SimpleDec) {
                 SimpleDec svd = (SimpleDec)vd;
-                VarSymbol varSym = new VarSymbol(Type.INT, svd.name, globalOffset);
+                VariableSymbol varSym = new VariableSymbol(svd.name, svd.type.type, globalOffset);
                 symTable.addSymbolToScope(svd.name, varSym);
                 emitComment("Add var to global scope: " + svd.name);
                 emitComment("<- vardec");
                 globalOffset--;
             } else if (vd instanceof ArrayDec) {
-                SimpleDec avd = (ArrayDec)vd;
-                ArraySymbol arrSym = new ArraySymbol(Type.INT, avd.name, avd.size.value, globalOffset-(avd.size.value-1));
+                ArrayDec avd = (ArrayDec)vd;
+                ArraySymbol arrSym = new ArraySymbol(avd.name, avd.type.type, avd.size.value, globalOffset-(avd.size.value-1));
                 symTable.addSymbolToScope(avd.name, arrSym);
                 emitComment("Add var to global scope: " + avd.name);
                 emitComment("<- vardec");
@@ -148,26 +150,26 @@ public class ASMGenerator {
     public int visit(VarDec tree, int offset, boolean isParam) {
         if (isParam) {
             if (tree instanceof SimpleDec) {
-                SimpleDec svd = (SimpleDec)vd;
-                VarSymbol varSym = new VarSymbol(Type.INT, svd.name, offset);
+                SimpleDec svd = (SimpleDec)tree;
+                VariableSymbol varSym = new VariableSymbol(svd.name, svd.type.type, offset);
                 symTable.addSymbolToScope(svd.name, varSym);
                 offset--;
             } else if (tree instanceof ArrayDec) {
-                SimpleDec avd = (ArrayDec)vd;
-                ArraySymbol arrSym = new ArraySymbol(Type.INT, avd.name, avd.size.value, offset--);
+                ArrayDec avd = (ArrayDec)tree;
+                ArraySymbol arrSym = new ArraySymbol(avd.name, avd.type.type, offset--, avd.size.value);
                 symTable.addSymbolToScope(avd.name, arrSym);
             }
         } else {
             if (tree instanceof SimpleDec) {
-                SimpleDec svd = (SimpleDec)vd;
-                VarSymbol varSym = new VarSymbol(Type.INT, svd.name, offset);
+                SimpleDec svd = (SimpleDec)tree;
+                VariableSymbol varSym = new VariableSymbol(svd.name, svd.type.type, offset);
                 symTable.addSymbolToScope(svd.name, varSym);
                 offset--;
                 emitComment("processing local var: " + svd.name);
             } else if (tree instanceof ArrayDec) {
-                SimpleDec avd = (ArrayDec)vd;
-                offset = offset-(avd.size.value-1)
-                ArraySymbol arrSym = new ArraySymbol(Type.INT, avd.name, avd.size.value, offset);
+                ArrayDec avd = (ArrayDec)tree;
+                offset = offset-(avd.size.value-1);
+                ArraySymbol arrSym = new ArraySymbol(avd.name, avd.type.type, avd.size.value, offset);
                 symTable.addSymbolToScope(avd.name, arrSym);
                 offset--;
                 emitComment("processing local (array) var: " + avd.name);
@@ -178,7 +180,7 @@ public class ASMGenerator {
 
     // Expressions
 
-    public void visit(Exp tree, int offset, boolean isAddr) {
+    public int visit(Exp tree, int offset, boolean isAddr) {
 
         if (tree instanceof NilExp) {
 
@@ -207,10 +209,10 @@ public class ASMGenerator {
     // Simple vars
 
     public void visit(SimpleVar tree, int offset, boolean isAddr) {
-        VarSymbol vSym = (VarSymbol)symTable.lookupSymbol(tree.name);
+        VariableSymbol vSym = (VariableSymbol)symTable.lookupSymbol(tree.name);
         emitComment("-> id");
-        emitComment("looking up id: " + e.name);
-        if(symTable.exists(e.name) == 0) { // lhs vs rhs of declarations
+        emitComment("looking up id: " + vSym.name);
+        if(symTable.exists(vSym.name) == 0) { // lhs vs rhs of declarations
             if (isAddr == true) {
                 emitRM("LDA", 0, vSym.offset, GP, "load id addr");
             } else {
@@ -231,7 +233,7 @@ public class ASMGenerator {
     public void visit(IndexVar tree, int offset, boolean isAddr) {
         ArraySymbol aSym = (ArraySymbol)symTable.lookupSymbol(tree.name);
         emitComment("-> subs");
-        if(symTable.exists(e.name) == 0) { // lhs vs rhs of declarations
+        if(symTable.exists(aSym.name) == 0) { // lhs vs rhs of declarations
             emitRM("LD", AC, aSym.offset, GP, "load id addr");
             emitRM("ST", AC, offset--, GP, "store arr addr");
             visit(tree.index, offset, false);
@@ -253,15 +255,15 @@ public class ASMGenerator {
         emitComment("processing function: " + tree.func);
         emitComment("jump around function body");
         int tmpLoc = emitSkip(1);
-        FunctionSymbol funSym = new FunctionSymbol(Type.INT, tree.func, null, emitLoc);
+        FunctionSymbol funSym = new FunctionSymbol(tree.func, tree.ret_type.type, offset, emitLoc);
         symTable.addSymbolToScope(tree.func, funSym);
         symTable.createNewScope();
         emitRM("ST", 0, -1, FP, "store return");
-        offset = visit(tree.params, offset, true);
+        offset = visit(tree.params_list, offset, true);
         offset = visit(tree.body, offset, false);
         emitRM("LD", PC, -1, FP, "call return");
         int tmpLoc2 = emitSkip(0);
-        emitBackup();
+        emitBackup(tmpLoc);
         emitRMAbs("LDA", PC, tmpLoc2, "Jump around fun body");
         emitRestore();
         emitComment("<- funcdec");
@@ -273,9 +275,9 @@ public class ASMGenerator {
     public void visit(VarExp tree, int offset, boolean isAddr) {
         if (tree.var instanceof SimpleVar) {
             SimpleVar sVar = (SimpleVar) tree.var;
-            VarSymbol vSym = (VarSymbol) symTable.lookupSymbol(sVar.name);
+            VariableSymbol vSym = (VariableSymbol) symTable.lookupSymbol(sVar.name);
             emitComment("-> id");
-            emitComment("looking up id: " sVar.name);
+            emitComment("looking up id: " + sVar.name);
             if (symTable.exists(sVar.name) == 0) { // load into GP register
                 if(isAddr) { // check if it's and address
                     emitRM("LDA", 0, vSym.offset, GP, "load id addr");
@@ -284,6 +286,8 @@ public class ASMGenerator {
                 }
             }
         } else if (tree.var instanceof IndexVar) { // load into FP register
+            IndexVar idv = (IndexVar)tree.var;
+            VariableSymbol vSym = (VariableSymbol)symTable.lookupSymbol(idv.name);
             if(isAddr) { // check if it's and address
                 emitRM("LDA", 0, vSym.offset, FP, "load id addr");
             } else {
@@ -297,7 +301,7 @@ public class ASMGenerator {
 
     public void visit(IntExp tree) {
         emitComment("-> const");
-        emitRM("LDC", AC. tree.value, 0, "load const");
+        emitRM("LDC", AC, tree.value, 0, "load const");
         emitComment("<- const");
     }
 
@@ -305,16 +309,16 @@ public class ASMGenerator {
 
     public void visit(CallExp tree, int offset) {
         int i = -2;
-        FunctionSymbol funSym = (FunctionSymbol)symTable.get(tree.func);
+        FunctionSymbol funSym = (FunctionSymbol)symTable.lookupFn(tree.func);
         emitComment("-> call");
-        emitComment("function call name: " tree.func);
+        emitComment("function call name: " + tree.func);
         while(tree.args != null) {
             if (tree.args.head != null) {
                 visit(tree.args.head, offset, false);
                 emitRM("ST", AC, offset+i, FP, "op: push left");
                 i--;
             }
-            tree.args = tree.args.head;
+            tree.args = tree.args.tail;
         }
         emitRM("ST", FP, offset, FP, "push ofp");
         emitRM("LDA", FP, offset, FP, "push frame");
@@ -333,7 +337,7 @@ public class ASMGenerator {
             emitRM("ST", AC, offset--, FP, "op: push left");
         } else if (tree.left instanceof VarExp){
             VarExp varExpr = (VarExp)tree.left;
-            if (varExpr.variable instanceof SimpleVar) {
+            if (varExpr.var instanceof SimpleVar) {
                 visit(varExpr, offset, false);
                 emitRM("ST", AC, offset--, FP, "op: push left");
             } else {
@@ -350,7 +354,7 @@ public class ASMGenerator {
             visit(tree.right, offset, false);
         } else if(tree.right instanceof VarExp) {
             VarExp varExpr = (VarExp)tree.right;
-            if (varExpr.variable instanceof SimpleVar) {
+            if (varExpr.var instanceof SimpleVar) {
                 visit(varExpr, offset, false);
             } else {
                 visit(varExpr, offset--, true);
@@ -367,23 +371,23 @@ public class ASMGenerator {
     public void generateOpCode(int op) {
         switch (op) {
             case OpExp.PLUS:
-                emitOp("ADD", AC, 1, AC, "op +");
+                emitOP("ADD", AC, 1, AC, "op +");
             break;
             case OpExp.MINUS:
-                emitOp("SUB", AC, 1, AC, "op -");
+                emitOP("SUB", AC, 1, AC, "op -");
             break;
             case OpExp.TIMES:
-                emitOp("MUL", AC, 1, AC, "op *");
+                emitOP("MUL", AC, 1, AC, "op *");
             break;
             case OpExp.OVER:
-                emitOp("DIV", AC, 1, AC, "op /");
+                emitOP("DIV", AC, 1, AC, "op /");
             break;
             case OpExp.EQ:
-                emitOp("EQU", AC, 1, AC, "op =");
+                emitOP("EQU", AC, 1, AC, "op =");
             break;
             case OpExp.EQEQ:
                 emitComment("EQEQ subroutine");
-                emitOp("SUB", AC, 1, AC, "op ==");
+                emitOP("SUB", AC, 1, AC, "op ==");
                 emitRM("JEQ", AC, 2, PC, "");
                 emitRM("LDC", AC, 0, 0, "false case");
                 emitRM("LDA", PC, 1, PC, "unconditional jump");
@@ -391,7 +395,7 @@ public class ASMGenerator {
             break;
             case OpExp.NOTEQ:
                 emitComment("NOTEQ subroutine");
-                emitOp("SUB", AC, 1, AC, "op !=");
+                emitOP("SUB", AC, 1, AC, "op !=");
                 emitRM("JNE", AC, 2, PC, "");
                 emitRM("LDC", AC, 0, 0, "false case");
                 emitRM("LDA", PC, 1, PC, "unconditional jump");
@@ -399,7 +403,7 @@ public class ASMGenerator {
             break;
             case OpExp.LT:
                 emitComment("Less Than subroutine");
-                emitOp("SUB", AC, 1, AC, "op <");
+                emitOP("SUB", AC, 1, AC, "op <");
                 emitRM("JLT", AC, 2, PC, "");
                 emitRM("LDC", AC, 0, 0, "false case");
                 emitRM("LDA", PC, 1, PC, "unconditional jump");
@@ -407,7 +411,7 @@ public class ASMGenerator {
             break;
             case OpExp.LTE:
                 emitComment("LTE subroutine");
-                emitOp("SUB", AC, 1, AC, "op <=");
+                emitOP("SUB", AC, 1, AC, "op <=");
                 emitRM("JLE", AC, 2, PC, "");
                 emitRM("LDC", AC, 0, 0, "false case");
                 emitRM("LDA", PC, 1, PC, "unconditional jump");
@@ -415,7 +419,7 @@ public class ASMGenerator {
             break;
             case OpExp.GT:
                 emitComment("GT subroutine");
-                emitOp("SUB", AC, 1, AC, "op >");
+                emitOP("SUB", AC, 1, AC, "op >");
                 emitRM("JGT", AC, 2, PC, "");
                 emitRM("LDC", AC, 0, 0, "false case");
                 emitRM("LDA", PC, 1, PC, "unconditional jump");
@@ -423,7 +427,7 @@ public class ASMGenerator {
             break;
             case OpExp.GTE:
                 emitComment("GTE subroutine");
-                emitOp("SUB", AC, 1, AC, "op >=");
+                emitOP("SUB", AC, 1, AC, "op >=");
                 emitRM("JGE", AC, 2, PC, "");
                 emitRM("LDC", AC, 0, 0, "false case");
                 emitRM("LDA", PC, 1, PC, "unconditional jump");
@@ -443,12 +447,9 @@ public class ASMGenerator {
 
     public void visit(AssignExp tree, int offset) {
         emitComment("-> op");
-        if (tree.lhs instanceof SimpleVar) {
-            visit(tree.lhs, offset, true);
-            emitRM("ST", AC, offset--, FP, "op: push left");
-        } else if (tree.lhs instanceof IndexVar) {
-            visit(tree.lhs, offset--, false);
-        }
+        visit(tree.lhs, offset, true);
+        emitRM("ST", AC, offset--, FP, "op: push left");
+        offset -= 1;
 
         if (tree.rhs instanceof IntExp) {
             visit(tree.rhs, offset, false);
@@ -459,7 +460,7 @@ public class ASMGenerator {
         } else if (tree.rhs instanceof OpExp) {
             visit(tree.rhs, offset, false);
         }
-
+        offset += 1;
         emitRM("LD", 1, offset++, FP, "op: load left");
         emitRM("ST", AC, 0, 1, "assign: store val");
         emitComment("<- op");
@@ -515,7 +516,7 @@ public class ASMGenerator {
     public int visit(CompoundExp tree, int offset) {
         emitComment("-> compound expr");
         offset = visit(tree.decs, offset, false);
-        visit(tree.decs, offset);
+        visit(tree.exps, offset);
         emitComment("<- compound expr");
         return offset;
     }
@@ -527,8 +528,8 @@ public class ASMGenerator {
         writeCode(comment);
     }
 
-    public void emitRM(Stirng op, int r, int offset, int r1, String comment) {
-        String code = emitLoc + ": " + op + " " + r " " + "," + offset + "(" + r1 +")";
+    public void emitRM(String op, int r, int offset, int r1, String comment) {
+        String code = emitLoc + ": " + op + " " + r + " " + "," + offset + "(" + r1 + ")";
         writeCode(code);
         emitLoc++;
         writeCode("\t" + comment);
@@ -536,8 +537,8 @@ public class ASMGenerator {
         highEmitLoc = Math.max(highEmitLoc, emitLoc);
     }
 
-    public void emitOP(Stirng op, int dest, int r, int r1, String comment) {
-        String code = emitLoc + ": " + op + " " + dest " " + "," + r + "," + r1;
+    public void emitOP(String op, int dest, int r, int r1, String comment) {
+        String code = emitLoc + ": " + op + " " + dest + " " + "," + r + "," + r1;
         writeCode(code);
         emitLoc++;
         writeCode("\t" + comment);
@@ -546,7 +547,7 @@ public class ASMGenerator {
     }
 
     public void emitRMAbs(String op, int r, int a, String comment) {
-        String code = emitLoc + ": " + op + " " + r " " + "," + (a-(emitLoc+1)) + "(" + PC +")";
+        String code = emitLoc + ": " + op + " " + r + " " + "," + (a-(emitLoc+1)) + "(" + PC +")";
         writeCode(code);
         emitLoc++;
         writeCode("\t" + comment);
@@ -576,7 +577,7 @@ public class ASMGenerator {
     public void writeCode(String contents) {
         PrintWriter outputStream = null;
         try {
-            outputStream = new PrintWriter(new FileOutputStream(this.filename, true));
+            outputStream = new PrintWriter(new FileOutputStream(this.fileName, true));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

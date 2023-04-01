@@ -138,8 +138,9 @@ public class SymbolTable {
         return symTable.get(scopeId);
     }
 
+    // needs to be publicly scoped for asm generator
     // check if symbols exist, returns scope the symbol exists in, otherwise -1
-    private int exists(String sym) {
+    public int exists(String sym) {
         for (HashMap<String, Symbol> scope : symTable) {
             if (scope.containsKey(sym)) {
                 return symTable.indexOf(scope);

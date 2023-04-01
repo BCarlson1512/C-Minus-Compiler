@@ -27,7 +27,8 @@ class Main {
   static public void main(String argv[]) {
     /* Start the parser */
     try {
-      processArgs();
+      processArgs(argv);
+
       String fileName = argv[0];
       PrintStream stdout = System.out;
 
@@ -95,10 +96,8 @@ class Main {
       e.printStackTrace();
     }
   }
-}
-
-public void processArgs(String args[]) {
-  for (String arg : args) {
+  private static void processArgs(String argslist[]) {
+  for (String arg : argslist) {
     if (!arg.contains("-")) {
       continue;
     }
@@ -107,3 +106,5 @@ public void processArgs(String args[]) {
     generateASM = arg.contains("c");
   }
 }
+}
+
