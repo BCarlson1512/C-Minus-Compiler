@@ -55,7 +55,7 @@ public class ASMGenerator {
         emitComment("Input routine");
 
         emitRM("ST", 0, -1, FP, "Store return");
-        emitOP("IN", 0, 0, 0, "");
+        emitOP("IN", 0, 0, 0, "input");
         emitRM("LD", PC, -1, FP, "Call return");
 
         // generate output function
@@ -63,7 +63,7 @@ public class ASMGenerator {
 
         emitRM("ST", 0, -1, FP, "Store return");
         emitRM("LD", 0, -2, FP, "Load output value");
-        emitOP("OUT", 0, 0, 0, "");
+        emitOP("OUT", 0, 0, 0, "output");
         emitRM("LD", 7,-1,FP, "Call return");
         int tmpEmitLoc2 = emitSkip(0);
         
@@ -71,6 +71,7 @@ public class ASMGenerator {
         emitBackup(tmpEmitLoc1);
         emitRMAbs("LDA", PC, tmpEmitLoc2, "Jump around I/O functions");
         emitComment("End of standard prelude...");
+        populateFunctions(); // hack to add input and output sym to symtable
         emitRestore();
 
         // Generate code around main
@@ -282,9 +283,7 @@ public class ASMGenerator {
 
     public void visit(CallExp tree, int offset) {
         int i = -2;
-        System.out.println("tree.func " + tree.func);
         FunctionSymbol funSym = (FunctionSymbol)symTable.lookupFn(tree.func);
-        System.out.println("Funsym " + funSym);
         emitComment("-> call");
         emitComment("function call name: " + tree.func);
         while(tree.args != null) {
@@ -597,6 +596,16 @@ public class ASMGenerator {
         } else if (emitComments) {
             emitComment("processing local (array) var: " + avd.name);
         }
+    }
+
+    // similar to semanticanalyzer, just going to hack the functions input() and output() in
+    private void populateFunctions() {
+        FunctionSymbol inputSym = new FunctionSymbol(Type.INT, "input", 0, new ArrayList<Symbol>(), 4);
+        ArrayList<Symbol> params = new ArrayList<Symbol>();
+        params.add(new VariableSymbol(Type.INT, ""));
+        FunctionSymbol outputSym = new FunctionSymbol(Type.VOID, "output", 0, params, 7);
+        symTable.addSymbolToScope("input", inputSym);
+        symTable.addSymbolToScope("output", outputSym);
     }
 
 }
