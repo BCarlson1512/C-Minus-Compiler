@@ -2,6 +2,7 @@
 ._*
 *.tgz
 *.tar.gz
+*.tm
 .vscode
 Lexer.java
 parser.java

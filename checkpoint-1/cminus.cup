@@ -13,6 +13,7 @@ parser code {:
 
     public static boolean outputSymbolTable;
     public static boolean generateASM;
+    public String fileName;
     
     /* Change the method report_error so it will display the line and
        column of where the error occurred in the input as well as the
@@ -119,9 +120,15 @@ program	          ::= declaration_list:s
                     {: 
                       RESULT = s;
                       SemanticAnalyzer analyzer = new SemanticAnalyzer(true, RESULT); 
-                      System.out.println("\nSymbol Table:\n");
-                      System.out.println(analyzer.toString());
-                      if (!analyzer.containsErrors)
+                      if (outputSymbolTable) {
+                        System.out.println("\nSymbol Table:\n");
+                        System.out.println(analyzer.toString());
+                      }
+                      if (generateASM && !analyzer.containsErrors) { // write asm code assuming our program is semantically valid
+                        System.out.println("Writing asm Code");
+                        ASMGenerator asmGenerator = new ASMGenerator(RESULT, fileName);
+                        asmGenerator.generate();
+                      }
                       if (analyzer.containsErrors) {
                         System.out.println("Compiled with errors \n");
                       } else {

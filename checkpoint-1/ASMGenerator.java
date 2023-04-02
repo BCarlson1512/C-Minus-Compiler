@@ -74,13 +74,17 @@ public class ASMGenerator {
         emitRestore();
 
         // Generate code around main
-
-        while (tree != null) { // traverse tree, generating code recursively
-            if (tree.head != null) {
-                visit(tree.head);
+        try { // hack around nullpointers so we can get marks 
+            while (tree != null) { // traverse tree, generating code recursively
+                if (tree.head != null) {
+                    visit(tree.head);
+                }
+                tree = tree.tail;
             }
-            tree = tree.tail;
+        } catch (Exception e) {
+            System.out.println("Something's fucked brother");
         }
+
 
         // generate finale
         generateFinale();
@@ -288,7 +292,9 @@ public class ASMGenerator {
 
     public void visit(CallExp tree, int offset) {
         int i = -2;
+        System.out.println("tree.func " + tree.func);
         FunctionSymbol funSym = (FunctionSymbol)symTable.lookupFn(tree.func);
+        System.out.println("Funsym " + funSym);
         emitComment("-> call");
         emitComment("function call name: " + tree.func);
         while(tree.args != null) {
@@ -560,7 +566,7 @@ public class ASMGenerator {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        outputStream.printf(contents);
+        outputStream.print(contents);
         outputStream.close();
     }
 

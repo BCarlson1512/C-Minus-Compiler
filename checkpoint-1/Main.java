@@ -23,34 +23,16 @@ class Main {
   public static boolean outputAbsyn = false;
   public static boolean outputSymbolTable = false;
   public static boolean generateASM = false;
+  public static String fileName = "";
 
   static public void main(String argv[]) {
     /* Start the parser */
     try {
       processArgs(argv);
 
-      String fileName = argv[0];
+      fileName = argv[0];
       PrintStream stdout = System.out;
 
-      //Boolean outputAbsyn = false;
-      //Boolean outputSymbolTable = false;
-      //Boolean generateASM = false;
-
-      // Set booleans based on command line arguments.
-      /*
-      for (Integer i = 0; i < argv.length; i++) {
-        if (argv[i].equals("-s")) { // -s and can happen continuously
-          outputSymbolTable = true;
-        } else if (argv[i].equals("-a")) {
-          outputAbsyn = true;
-        } else if (argv[i].equals("-sa") || argv[i].equals("-as")) {
-          outputSymbolTable = true;
-          outputAbsyn = true;
-        } else if (argv[i].endsWith(".cm")) {
-          fileName = argv[i];
-        }
-      }
-      */
       String[] pathSegments = fileName.split("/");
       String lastSegment = pathSegments[pathSegments.length - 1];
 
@@ -69,6 +51,8 @@ class Main {
       } else {
         System.setOut(stdout);
       }
+
+      p.fileName = generateASM ? outputBaseFileName + ".tm" : fileName;
 
       if (outputSymbolTable) {
         System.setOut(new PrintStream(new FileOutputStream(outputBaseFileName + ".sym")));
