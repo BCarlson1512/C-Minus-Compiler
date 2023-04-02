@@ -83,6 +83,8 @@ public class ASMGenerator {
             }
         } catch (Exception e) {
             System.out.println("Something's fucked brother");
+            emitComment("* Error generating asm code, continuing to finale...");
+            emitComment("* Side note something is really cooked");
         }
 
 
@@ -90,18 +92,6 @@ public class ASMGenerator {
         generateFinale();
         // exit scope
         symTable.deleteScope();
-    }
-
-    private void generateFinale() {
-        emitComment("Generating Finale");
-        emitRM("ST", FP, globalOffset, FP, "Push old FP");
-        emitRM("LDA", FP, globalOffset, FP, "Push frame");
-        emitRM("LDA", 0, 1, PC, "Load AC with return ptr");
-        
-        FunctionSymbol mainSym = (FunctionSymbol)symTable.lookupFn("main");
-        emitRMAbs("LDA", PC, mainSym.fun_address, "Jump to main");
-        emitRM("LD", FP, 0, FP, "Pop Frame");
-        emitOP("HALT", 0, 0, 0, "");
     }
 
     // VarDecList
@@ -514,7 +504,7 @@ public class ASMGenerator {
     }
 
     public void emitRM(String op, int r, int offset, int r1, String comment) {
-        String code = emitLoc + ": " + op + " " + r + " " + "," + offset + "(" + r1 + ")";
+        String code = emitLoc + ": " + op + " " + r + "," + offset + "(" + r1 + ")";
         writeCode(code);
         emitLoc++;
         writeCode("\t" + comment);
@@ -523,7 +513,7 @@ public class ASMGenerator {
     }
 
     public void emitOP(String op, int dest, int r, int r1, String comment) {
-        String code = emitLoc + ": " + op + " " + dest + " " + "," + r + "," + r1;
+        String code = emitLoc + ": " + op + " " + dest + "," + r + "," + r1;
         writeCode(code);
         emitLoc++;
         writeCode("\t" + comment);
@@ -532,7 +522,7 @@ public class ASMGenerator {
     }
 
     public void emitRMAbs(String op, int r, int a, String comment) {
-        String code = emitLoc + ": " + op + " " + r + " " + "," + (a-(emitLoc+1)) + "(" + PC +")";
+        String code = emitLoc + ": " + op + " " + r + "," + (a-(emitLoc+1)) + "(" + PC +")";
         writeCode(code);
         emitLoc++;
         writeCode("\t" + comment);
@@ -571,6 +561,18 @@ public class ASMGenerator {
     }
 
     // Redundant code helpers
+
+    private void generateFinale() {
+        emitComment("Generating Finale");
+        emitRM("ST", FP, globalOffset, FP, "Push old FP");
+        emitRM("LDA", FP, globalOffset, FP, "Push frame");
+        emitRM("LDA", 0, 1, PC, "Load AC with return ptr");
+        
+        FunctionSymbol mainSym = (FunctionSymbol)symTable.lookupFn("main");
+        emitRMAbs("LDA", PC, mainSym.fun_address, "Jump to main");
+        emitRM("LD", FP, 0, FP, "Pop Frame");
+        emitOP("HALT", 0, 0, 0, "");
+    }
 
     private void simpleDecHelper(SimpleDec svd, int offset, boolean updateOffset, boolean isGlobal, boolean emitComments) {
         VariableSymbol varSym = new VariableSymbol(svd.name, svd.type.type, offset);
