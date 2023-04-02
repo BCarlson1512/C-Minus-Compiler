@@ -600,7 +600,7 @@ public class ASMGenerator {
 
     // similar to semanticanalyzer, just going to hack the functions input() and output() in
     private void populateFunctions() {
-        FunctionSymbol inputSym = new FunctionSymbol(Type.INT, "input", 0, new ArrayList<Symbol>(), 4);
+        FunctionSymbol inputSym = new FunctionSymbol(Type.INT, "input", 0, new ArrayList<Symbol>(), 5);
         ArrayList<Symbol> params = new ArrayList<Symbol>();
         params.add(new VariableSymbol(Type.INT, ""));
         FunctionSymbol outputSym = new FunctionSymbol(Type.VOID, "output", 0, params, 7);
