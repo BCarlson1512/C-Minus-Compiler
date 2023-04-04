@@ -25,6 +25,8 @@ You have two options for running this project:
   - these test the ability to print the ast to stdout and to files
 - 2: use makefile rules
   - See makefile for further explanation
+- 3: for using code gen, use makefile commands
+  - eg: `make M3_Ex1`
 
 ### Build/Run test files
 
