@@ -471,7 +471,7 @@ public class ASMGenerator {
         int tmpLoc3 = emitSkip(0);
         emitBackup(tmpLoc2);
         emitRMAbs("JEQ", 0, tmpLoc3, "while: jump to end");
-        emitRestore();
+        //emitRestore();
         emitComment("<- while");
         symTable.deleteScope();
     }
@@ -559,7 +559,7 @@ public class ASMGenerator {
         outputStream.close();
     }
 
-    // Redundant code helpers
+    // Helpers
 
     private void generateFinale() {
         emitComment("Generating Finale");

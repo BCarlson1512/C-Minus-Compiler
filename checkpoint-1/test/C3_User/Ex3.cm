@@ -1,0 +1,4 @@
+/* a simple program demonstrating an output function */
+void main(void) {
+    output(123);
+}

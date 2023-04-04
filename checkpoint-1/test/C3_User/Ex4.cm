@@ -1,0 +1,11 @@
+/* a program with at least 1 semantic error */
+void main(void) {
+  int x;
+
+  bool y;
+
+  y = true;
+
+  x = y;
+
+}

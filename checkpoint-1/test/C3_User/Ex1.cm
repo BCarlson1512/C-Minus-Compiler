@@ -1,0 +1,11 @@
+/* a simple program that demonstrates while loops and addition */
+void main(void) {
+    int x;
+    int y;
+    int z;
+    x = 0;
+    output(x);
+    while (x <= 2) {
+        x = x + 1;
+    }
+}

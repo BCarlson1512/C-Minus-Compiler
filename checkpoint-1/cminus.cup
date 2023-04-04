@@ -20,7 +20,7 @@ parser code {:
        reason for the error which is passed into the method in the
        String 'message'. */
     public void report_error(String message, Object info) {
-   
+        valid = false;
         /* Create a StringBuffer called 'm' with the string 'Error' in it. */
         StringBuffer m = new StringBuffer("Error");
    
@@ -124,12 +124,12 @@ program	          ::= declaration_list:s
                         System.out.println("\nSymbol Table:\n");
                         System.out.println(analyzer.toString());
                       }
-                      if (generateASM && !analyzer.containsErrors) { // write asm code assuming our program is semantically valid
+                      if (generateASM && !analyzer.containsErrors && parser.valid) { // write asm code assuming our program is semantically valid
                         System.out.println("Writing asm Code");
                         ASMGenerator asmGenerator = new ASMGenerator(RESULT, fileName);
                         asmGenerator.generate();
                       }
-                      if (analyzer.containsErrors) {
+                      if (analyzer.containsErrors || !parser.valid) {
                         System.out.println("Compiled with errors \n");
                       } else {
                         System.out.println("Compiled without errors \n");

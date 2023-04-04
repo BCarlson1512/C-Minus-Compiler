@@ -1,0 +1,14 @@
+/* A test file that contains three syntactic errors */
+
+void main(bool p) {
+
+  int x = 5
+
+  if (x=5){
+    retun void;
+  }
+
+  int y = 5;
+
+  return 5;
+}

@@ -1,0 +1,11 @@
+/* a program with at least 1 semantic error */
+
+int g(int n) {
+  return 5;
+}
+
+void main(void) {
+  int x[true];
+
+  output(z);
+}
